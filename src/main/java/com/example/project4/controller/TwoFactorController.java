@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin(
+    origins = "http://localhost:5173",
+    allowCredentials = "true"
+)
 @RestController
-
 @RequestMapping("/2fa")
 public class TwoFactorController {
 
@@ -49,14 +52,17 @@ public class TwoFactorController {
         }
     }
 
-
     @PostMapping("/verify")
     public String verify(HttpSession session,
                          @RequestParam int code) {
 
-        User user = (User) session.getAttribute("user");
+        User sessionUser = (User) session.getAttribute("user");
 
-        if (user == null) return "NOT LOGIN";
+        if (sessionUser == null) return "NOT LOGIN";
+
+        User user = userService.findByUsername(sessionUser.getUsername());
+
+        if (user == null) return "USER NOT FOUND";
 
         boolean ok = twoFactorService.verifyCode(user.getSecret(), code);
 
@@ -69,14 +75,17 @@ public class TwoFactorController {
         return "INVALID OTP";
     }
 
-    // login OTP
     @PostMapping("/login")
     public String login2FA(HttpSession session,
                            @RequestParam int code) {
 
-        User user = (User) session.getAttribute("user");
+        User sessionUser = (User) session.getAttribute("user");
 
-        if (user == null) return "NOT LOGIN";
+        if (sessionUser == null) return "NOT LOGIN";
+
+        User user = userService.findByUsername(sessionUser.getUsername());
+
+        if (user == null) return "USER NOT FOUND";
 
         boolean ok = twoFactorService.verifyCode(user.getSecret(), code);
 

@@ -15,6 +15,7 @@ public class User {
 
     private String secret;
     private boolean using2FA;
+    private boolean firstLogin;
 
     public Long getId() { return id; }
 
@@ -29,4 +30,7 @@ public class User {
 
     public boolean isUsing2FA() { return using2FA; }
     public void setUsing2FA(boolean using2FA) { this.using2FA = using2FA; }
+    public boolean isFirstLogin() { return firstLogin; }
+
+    public void setFirstLogin(boolean firstLogin) {  this.firstLogin = firstLogin;  }
 }

@@ -6,6 +6,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(
+    origins = "http://localhost:5173",
+    allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -26,10 +30,45 @@ public class AuthController {
 
         session.setAttribute("user", user);
 
-        if (user.isUsing2FA()) {
-            return "REQUIRE_OTP";
+        // bắt đổi password lần đầu
+        if (user.isFirstLogin()) {
+            return "REQUIRE_CHANGE_PASSWORD";
         }
 
-        return "LOGIN SUCCESS";
+        // chưa setup 2FA
+        if (user.getSecret() == null || user.getSecret().isEmpty()) {
+            return "REQUIRE_2FA_SETUP";
+        }
+
+        // đã setup 2FA
+        return "REQUIRE_OTP";
+    }
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+
+        session.invalidate();
+
+        return "LOGOUT SUCCESS";
+    }
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword,
+                                 HttpSession session) {
+
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser == null) return "NOT LOGIN";
+
+        User user = userService.findByUsername(sessionUser.getUsername());
+
+        if (user == null) return "USER NOT FOUND";
+
+        user.setPassword(newPassword);
+        user.setFirstLogin(false);
+
+        userService.save(user);
+
+        session.setAttribute("user", user);
+
+        return "PASSWORD CHANGED";
     }
 }
