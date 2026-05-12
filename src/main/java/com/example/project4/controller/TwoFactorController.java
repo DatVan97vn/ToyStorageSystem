@@ -89,6 +89,11 @@ public class TwoFactorController {
 
         boolean ok = twoFactorService.verifyCode(user.getSecret(), code);
 
-        return ok ? "LOGIN SUCCESS" : "INVALID OTP";
+        if (ok) {
+            session.setAttribute("authenticated", true);
+            return "LOGIN SUCCESS";
+        }
+
+        return "INVALID OTP";
     }
 }

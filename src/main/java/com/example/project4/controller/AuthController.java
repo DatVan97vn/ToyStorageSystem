@@ -29,6 +29,7 @@ public class AuthController {
         }
 
         session.setAttribute("user", user);
+        session.setAttribute("authenticated", false);
 
         // bắt đổi password lần đầu
         if (user.isFirstLogin()) {
@@ -70,5 +71,21 @@ public class AuthController {
         session.setAttribute("user", user);
 
         return "PASSWORD CHANGED";
+    }
+    @GetMapping("/me")
+    public String me(HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        Boolean authenticated = (Boolean) session.getAttribute("authenticated");
+
+        if (user == null) {
+            return "NOT_LOGIN";
+        }
+
+        if (authenticated == null || !authenticated) {
+            return "NOT_AUTHENTICATED";
+        }
+
+        return "LOGIN";
     }
 }
