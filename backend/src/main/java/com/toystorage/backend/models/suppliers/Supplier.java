@@ -1,7 +1,5 @@
-package com.toystorage.backend.models.warehouses;
+package com.toystorage.backend.models.suppliers;
 
-import com.toystorage.backend.enums.warehouses.WarehouseType;
-import com.toystorage.backend.models.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 
-@Table(name = "warehouses")
+@Table(name = "suppliers")
 
 @Getter
 @Setter
@@ -18,67 +16,46 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class Warehouse {
+public class Supplier {
 
-    /*
-     * Primary Key
-     */
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /*
-     * Tên kho
+     * Tên nhà cung cấp
      *
      * Ví dụ:
-     * Kho HCM
-     * Store Quận 1
+     * Bandai
+     * Lego Vietnam
      */
     @Column(nullable = false, length = 255)
     private String name;
 
     /*
-     * Mã kho
-     *
-     * Ví dụ:
-     * WH001
-     * STORE001
+     * Số điện thoại
      */
-    @Column(nullable = false, unique = true, length = 255)
-    private String code;
-
-    /*
-     * Loại kho
-     *
-     * MAIN_WAREHOUSE
-     * STORE
-     */
-    @Enumerated(EnumType.STRING)
-
-    @Column(nullable = false)
-    private WarehouseType type;
-
-    /*
-     * Số điện thoại kho
-     */
+    @Column(length = 255)
     private String phone;
 
     /*
-     * Địa chỉ kho
+     * Email nhà cung cấp
+     */
+    @Column(length = 255)
+    private String email;
+
+    /*
+     * Địa chỉ
      */
     @Column(columnDefinition = "TEXT")
     private String address;
 
     /*
-     * Người quản lý kho
-     *
-     * FK -> users.id
+     * Mã số thuế
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-
-    @JoinColumn(name = "manager_id")
-    private User manager;
+    @Column(name = "tax_code", length = 255)
+    private String taxCode;
 
     /*
      * Ngày tạo

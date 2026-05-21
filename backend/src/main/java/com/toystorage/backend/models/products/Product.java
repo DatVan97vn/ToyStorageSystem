@@ -2,7 +2,6 @@ package com.toystorage.backend.models.products;
 
 import com.toystorage.backend.models.suppliers.Supplier;
 import jakarta.persistence.*;
-import jdk.jfr.Category;
 import lombok.*;
 
 import java.math.BigDecimal;

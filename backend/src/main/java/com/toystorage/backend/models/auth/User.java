@@ -7,11 +7,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/*
- * Entity User
- *
- * Mapping với table users trong database
- */
 @Entity
 
 @Table(name = "users")

@@ -6,23 +6,31 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "warehouse_locations")
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 
-
 public class WarehouseLocation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "warehouse_id")
+
+    @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
 
     private String zone;
+
+
+
+    private String aisle;
+
 
     private String shelf;
 
@@ -46,12 +54,15 @@ public class WarehouseLocation {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
 
+        this.createdAt = LocalDateTime.now();
+
+        this.updatedAt = LocalDateTime.now();
     }
+
     @PreUpdate
     public void preUpdate() {
+
         this.updatedAt = LocalDateTime.now();
     }
 }
