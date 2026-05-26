@@ -2,8 +2,8 @@ package com.toystorage.backend.models.transfers;
 
 import com.toystorage.backend.enums.transfers.TransferStatus;
 import com.toystorage.backend.models.auth.User;
-import com.toystorage.backend.models.suppliers.Supplier;
-import com.toystorage.backend.models.warehouses.Warehouse;
+import com.toystorage.backend.models.suppliers.Suppliers;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,15 +27,15 @@ public class StockTransfer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    private Suppliers supplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_warehouse_id")
-    private Warehouse fromWarehouse;
+    private Warehouses fromWarehouse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_warehouse_id")
-    private Warehouse toWarehouse;
+    private Warehouses toWarehouse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")

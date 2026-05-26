@@ -2,8 +2,8 @@ package com.toystorage.backend.models.inventory;
 
 import com.toystorage.backend.enums.inventory.MovementType;
 import com.toystorage.backend.models.auth.User;
-import com.toystorage.backend.models.products.Product;
-import com.toystorage.backend.models.warehouses.Warehouse;
+import com.toystorage.backend.models.products.Products;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import com.toystorage.backend.models.warehouses.WarehouseLocation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +25,7 @@ public class StockMovement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id")
-    private Warehouse warehouse;
+    private Warehouses warehouse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
@@ -33,7 +33,7 @@ public class StockMovement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Products product;
 
     @Column(name = "reference_type")
     private String referenceType;

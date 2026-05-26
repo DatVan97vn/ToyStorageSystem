@@ -4,6 +4,7 @@ import com.toystorage.backend.services.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.toystorage.backend.models.inventory.InventoryBalance;
 
 @RestController
 
@@ -13,7 +14,56 @@ import org.springframework.web.bind.annotation.*;
 
 public class InventoryController {
     private final InventoryService inventoryService;
+    /*
+     * Tạo mới tồn kho
+     *
+     * POST /api/inventory
+     */
+    @PostMapping("/create")
 
+    public ResponseEntity<?> createInventory(
+            @RequestBody InventoryBalance inventoryBalance
+    ) {
+
+        return ResponseEntity.ok(
+                inventoryService.createInventory(inventoryBalance)
+        );
+    }
+
+    /*
+     * Cập nhật tồn kho
+     *
+     * PUT /api/inventory/{id}
+     */
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> updateInventory(
+            @PathVariable Long id,
+            @RequestBody InventoryBalance inventoryBalance
+    ) {
+
+        return ResponseEntity.ok(
+                inventoryService.updateInventory(id, inventoryBalance)
+        );
+    }
+
+    /*
+     * Xóa tồn kho
+     *
+     * DELETE /api/inventory/{id}
+     */
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteInventory(
+            @PathVariable Long id
+    ) {
+
+        inventoryService.deleteInventory(id);
+
+        return ResponseEntity.ok(
+                "Delete inventory successfully"
+        );
+    }
     /*
      * Xem toàn bộ tồn kho
      */
@@ -53,5 +103,22 @@ public class InventoryController {
                 inventoryService.getInventoryByProduct(productId)
         );
     }
+    /*
+     * Xem chi tiết tồn kho theo id
+     *
+     * GET /api/inventory/{id}
+     */
+    @GetMapping("/{id}")
+
+    public ResponseEntity<?> getInventoryById(
+            @PathVariable Long id
+    ) {
+
+        return ResponseEntity.ok(
+                inventoryService.getInventoryById(id)
+        );
+    }
+
+
 
 }

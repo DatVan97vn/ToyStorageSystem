@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class TransferScan {
+public class TransferScans {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class TransferScan {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "transfer_item_id")
-    private StockTransferItem transferItem;
+    private StockTransferItems transferItem;
 
     /*
      * Barcode scan

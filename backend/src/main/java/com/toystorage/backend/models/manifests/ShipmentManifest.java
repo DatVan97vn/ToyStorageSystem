@@ -2,7 +2,7 @@ package com.toystorage.backend.models.manifests;
 
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.models.auth.User;
-import com.toystorage.backend.models.warehouses.Warehouse;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,12 +32,12 @@ public class ShipmentManifest {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "from_warehouse_id")
-    private Warehouse fromWarehouse;
+    private Warehouses fromWarehouse;
 
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "to_warehouse_id")
-    private Warehouse toWarehouse;
+    private Warehouses toWarehouse;
 
     /*
      * Trạng thái bảng kê

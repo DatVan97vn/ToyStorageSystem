@@ -19,9 +19,7 @@ public class DashboardWarehouseController {
 
     private final DashboardWarehouseService dashboardWarehouseService;
 
-    /*
-     * Dashboard KPI kho
-     */
+
     @GetMapping
 
     public ResponseEntity<?> dashboard() {

@@ -1,8 +1,8 @@
 package com.toystorage.backend.models.packages;
 
-import com.toystorage.backend.models.products.Product;
+import com.toystorage.backend.models.products.Products;
 import com.toystorage.backend.models.transfers.StockTransfer;
-import com.toystorage.backend.models.transfers.StockTransferItem;
+import com.toystorage.backend.models.transfers.StockTransferItems;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,7 +43,7 @@ public class PackageTransferItem {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "transfer_item_id")
-    private StockTransferItem transferItem;
+    private StockTransferItems transferItem;
 
     /*
      * Sản phẩm
@@ -51,7 +51,7 @@ public class PackageTransferItem {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Products product;
 
     /*
      * Số lượng

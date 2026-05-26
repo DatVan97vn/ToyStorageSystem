@@ -4,17 +4,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 /*
  * Response sản phẩm
  */
-
 @Getter
 @Setter
 @Builder
-
 public class ProductResponse {
 
     private Long id;
+
+    private Long categoryId;
+
+    private String categoryName;
+
+    private Long supplierId;
+
+    private String supplierName;
 
     private String name;
 
@@ -22,7 +31,19 @@ public class ProductResponse {
 
     private String barcode;
 
-    private Double salePrice;
-
     private String image;
+
+    private String unit;
+
+    private BigDecimal costPrice;
+
+    private BigDecimal salePrice;
+
+    private BigDecimal weight;
+
+    private String description;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

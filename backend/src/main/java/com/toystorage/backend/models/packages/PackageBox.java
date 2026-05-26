@@ -2,7 +2,7 @@ package com.toystorage.backend.models.packages;
 
 import com.toystorage.backend.enums.packages.PackageStatus;
 import com.toystorage.backend.models.auth.User;
-import com.toystorage.backend.models.warehouses.Warehouse;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,7 +36,7 @@ public class PackageBox {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "warehouse_id")
-    private Warehouse warehouse;
+    private Warehouses warehouse;
 
     /*
      * Trạng thái kiện

@@ -1,6 +1,6 @@
 package com.toystorage.backend.models.transfers;
 
-import com.toystorage.backend.models.products.Product;
+import com.toystorage.backend.models.products.Products;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
-public class StockTransferItem {
+public class StockTransferItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class StockTransferItem {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Products product;
 
     /*
      * SL yêu cầu

@@ -1,6 +1,6 @@
 package com.toystorage.backend.models.products;
 
-import com.toystorage.backend.models.suppliers.Supplier;
+import com.toystorage.backend.models.suppliers.Suppliers;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class Product {
+public class Products {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private ProductCategory category;
+    private ProductCategories category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    private Suppliers supplier;
 
     @Column(nullable =false, length = 255)
     private String name;

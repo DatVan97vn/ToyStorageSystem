@@ -1,7 +1,7 @@
 package com.toystorage.backend.services.transfers;
 
 import com.toystorage.backend.dto.request.transfers.ScanBarcodeRequest;
-import com.toystorage.backend.models.transfers.TransferScan;
+import com.toystorage.backend.models.transfers.TransferScans;
 import com.toystorage.backend.repository.transfers.TransferScanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,12 +23,12 @@ public class TransferScanService {
     /*
      * Scan barcode
      */
-    public TransferScan scanBarcode(
+    public TransferScans scanBarcode(
             ScanBarcodeRequest request
     ) {
 
-        TransferScan scan =
-                TransferScan.builder()
+        TransferScans scan =
+                TransferScans.builder()
 
                         .barcode(request.getBarcode())
 

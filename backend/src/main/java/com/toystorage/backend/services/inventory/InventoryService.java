@@ -35,7 +35,7 @@ public class InventoryService {
     ) {
 
         return inventoryBalanceRepository
-                .findByWarehouseId(warehouseId);
+                .findByWarehouse_Id(warehouseId);
     }
 
     /*
@@ -46,6 +46,40 @@ public class InventoryService {
     ) {
 
         return inventoryBalanceRepository
-                .findByProductId(productId);
+                .findByProduct_Id(productId);
+    }
+    public InventoryBalance getInventoryById(Long id) {
+
+        return inventoryBalanceRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Inventory balance not found")
+                );
+    }
+
+    public InventoryBalance createInventory(InventoryBalance inventoryBalance) {
+
+        return inventoryBalanceRepository.save(inventoryBalance);
+    }
+
+    public InventoryBalance updateInventory(Long id, InventoryBalance request) {
+
+        InventoryBalance inventoryBalance = getInventoryById(id);
+
+        inventoryBalance.setWarehouse(request.getWarehouse());
+
+        // Tạm thời tắt location vì bảng inventory_balances trong MySQL chưa có cột location_id
+        // inventoryBalance.setLocation(request.getLocation());
+
+        inventoryBalance.setProduct(request.getProduct());
+        inventoryBalance.setQuantity(request.getQuantity());
+
+        return inventoryBalanceRepository.save(inventoryBalance);
+    }
+
+    public void deleteInventory(Long id) {
+
+        InventoryBalance inventoryBalance = getInventoryById(id);
+
+        inventoryBalanceRepository.delete(inventoryBalance);
     }
 }

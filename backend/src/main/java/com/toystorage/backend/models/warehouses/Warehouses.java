@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class Warehouse {
+public class Warehouses {
 
     /*
      * Primary Key

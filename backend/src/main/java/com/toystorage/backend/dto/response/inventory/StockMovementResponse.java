@@ -4,15 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 /*
- * Response tồn kho
+ * Response lịch sử biến động kho
  */
 
 @Getter
 @Setter
 @Builder
 
-public class InventoryResponse {
+public class StockMovementResponse {
 
     private Long id;
 
@@ -24,5 +26,13 @@ public class InventoryResponse {
 
     private String productName;
 
+    private String movementType;
+
     private Integer quantity;
+
+    private String referenceType;
+
+    private Long referenceId;
+
+    private LocalDateTime createdAt;
 }

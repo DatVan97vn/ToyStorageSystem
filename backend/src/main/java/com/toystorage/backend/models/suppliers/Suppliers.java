@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class Supplier {
+public class Suppliers {
 
     @Id
 
