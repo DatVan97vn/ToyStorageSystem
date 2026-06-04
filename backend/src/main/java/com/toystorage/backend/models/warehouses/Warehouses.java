@@ -26,7 +26,7 @@ public class Warehouses {
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     /*
      * Tên kho

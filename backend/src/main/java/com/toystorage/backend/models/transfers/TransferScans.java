@@ -20,7 +20,7 @@ public class TransferScans {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     /*
      * Item được scan

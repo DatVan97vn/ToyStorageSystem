@@ -16,7 +16,7 @@ public class ProductService {
 
     private ProductResponse toResponse(Products product) {
         return ProductResponse.builder()
-                .id(product.getId())
+               .id(product.getId() != null ? Long.valueOf(product.getId()) : null)
 
                 .categoryId(
                         product.getCategory() != null

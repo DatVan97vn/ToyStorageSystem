@@ -14,7 +14,7 @@ public class WarehouseMapper {
         }
 
         return WarehouseResponse.builder()
-                .id(warehouse.getId())
+                .id(warehouse.getId()) // Trả về Integer thuần, khớp hoàn toàn với DTO và Entity
                 .name(warehouse.getName())
                 .code(warehouse.getCode())
                 .type(
@@ -26,7 +26,7 @@ public class WarehouseMapper {
                 .address(warehouse.getAddress())
                 .managerId(
                         warehouse.getManager() != null
-                                ? warehouse.getManager().getId()
+                                ? warehouse.getManager().getId() // Trả về Integer thuần
                                 : null
                 )
                 .managerName(

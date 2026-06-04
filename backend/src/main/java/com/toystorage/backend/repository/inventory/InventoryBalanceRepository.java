@@ -9,7 +9,6 @@ import java.util.Optional;
 /*
  * Repository tồn kho
  */
-
 public interface InventoryBalanceRepository
         extends JpaRepository<InventoryBalance, Long> {
 
@@ -30,9 +29,5 @@ public interface InventoryBalanceRepository
     /*
      * Theo kho + sản phẩm
      */
-    Optional<InventoryBalance>
-    findByWarehouse_IdAndProduct_Id(
-            Long warehouseId,
-            Long productId
-    );
+    Optional<InventoryBalance> findByWarehouse_IdAndProduct_Id(Integer warehouseId, Integer productId);
 }

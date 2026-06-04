@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class WarehouseResponse {
 
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -23,7 +23,7 @@ public class WarehouseResponse {
 
     private String address;
 
-    private Long managerId;
+    private Integer managerId;
 
     private String managerName;
 

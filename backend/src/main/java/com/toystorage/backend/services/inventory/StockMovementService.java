@@ -26,9 +26,9 @@ public class StockMovementService {
         return StockMovementResponse.builder()
                 .id(movement.getId())
 
-                .warehouseId(
+               .warehouseId(
                         movement.getWarehouse() != null
-                                ? movement.getWarehouse().getId()
+                                ? Long.valueOf(movement.getWarehouse().getId()) // Ép Integer sang Long ở đây
                                 : null
                 )
                 .warehouseName(
@@ -39,8 +39,9 @@ public class StockMovementService {
 
                 .productId(
                         movement.getProduct() != null
-                                ? movement.getProduct().getId()
+                                ? Long.valueOf(movement.getProduct().getId()) // Ép kiểu Integer lên Long
                                 : null
+                
                 )
                 .productName(
                         movement.getProduct() != null
@@ -108,18 +109,18 @@ public class StockMovementService {
          * 2. Tìm tồn kho hiện tại
          */
         InventoryBalance inventoryBalance =
-                inventoryBalanceRepository
-                        .findByWarehouse_IdAndProduct_Id(
-                                stockMovement.getWarehouse().getId(),
-                                stockMovement.getProduct().getId()
-                        )
-                        .orElse(
-                                InventoryBalance.builder()
-                                        .warehouse(stockMovement.getWarehouse())
-                                        .product(stockMovement.getProduct())
-                                        .quantity(0)
-                                        .build()
-                        );
+        inventoryBalanceRepository
+                .findByWarehouse_IdAndProduct_Id(
+                        stockMovement.getWarehouse().getId(), 
+                        stockMovement.getProduct().getId()    
+                )
+                .orElse(
+                        InventoryBalance.builder()
+                                .warehouse(stockMovement.getWarehouse())
+                                .product(stockMovement.getProduct())
+                                .quantity(0)
+                                .build()
+                );
 
         /*
          * 3. Update quantity theo movement type

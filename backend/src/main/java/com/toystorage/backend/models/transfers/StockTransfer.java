@@ -20,7 +20,7 @@ public class StockTransfer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "transfer_code", unique = true)
     private String transferCode;
