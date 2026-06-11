@@ -1,17 +1,12 @@
 package com.toystorage.backend.models.auth;
 
 import com.toystorage.backend.enums.users.UserStatus;
-import com.toystorage.backend.models.warehouses.Warehouse;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-/*
- * Entity User
- *
- * Mapping với table users trong database
- */
 @Entity
 
 @Table(name = "users")
@@ -55,7 +50,7 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
 
     @JoinColumn(name = "warehouse_id")
-    private Warehouse warehouse;
+    private Warehouses warehouse;
 
     /*
      * Tên nhân viên

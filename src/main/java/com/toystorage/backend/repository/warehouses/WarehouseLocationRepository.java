@@ -1,0 +1,13 @@
+package com.toystorage.backend.repository.warehouses;
+
+import com.toystorage.backend.models.warehouses.WarehouseLocation;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface WarehouseLocationRepository extends JpaRepository<WarehouseLocation, Long> {
+
+    List<WarehouseLocation> findByWarehouseId(Long warehouseId);
+
+    boolean existsByLocationCode(String locationCode);
+}
