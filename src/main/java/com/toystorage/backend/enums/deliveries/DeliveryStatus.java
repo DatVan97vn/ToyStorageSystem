@@ -1,4 +1,18 @@
-package com.toystorage.backend.enums.delivery;
+package com.toystorage.backend.enums.deliveries;
 
-public class DeliveryStatus {
+public enum DeliveryStatus {
+
+    CREATED,
+
+    READY,
+
+    DELIVERING,
+
+    ARRIVED,
+
+    RECEIVED,
+
+    COMPLETED,
+
+    CANCELLED
 }

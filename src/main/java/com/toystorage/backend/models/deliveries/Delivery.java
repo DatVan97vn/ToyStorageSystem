@@ -1,38 +1,44 @@
 package com.toystorage.backend.models.deliveries;
 
 import com.toystorage.backend.enums.deliveries.DeliveryStatus;
-import com.toystorage.backend.models.auth.User;
+import com.toystorage.backend.models.manifests.ShipmentManifest;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "delivery_tracking")
+@Table(name = "deliveries")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeliveryTracking {
+public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "delivery_code", unique = true)
+    private String deliveryCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
+    @JoinColumn(name = "manifest_id")
+    private ShipmentManifest manifest;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id")
+    private Driver driver;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    @Column(columnDefinition = "TEXT")
-    private String note;
+    @Column(name = "departure_time")
+    private LocalDateTime departureTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    @Column(name = "arrival_time")
+    private LocalDateTime arrivalTime;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -40,5 +46,9 @@ public class DeliveryTracking {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+
+        if (this.status == null) {
+            this.status = DeliveryStatus.CREATED;
+        }
     }
 }

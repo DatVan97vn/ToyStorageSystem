@@ -24,13 +24,22 @@ public class PackageService {
      */
     public PackageBox createPackage() {
 
+        String packageCode =
+                "PKG-" + System.currentTimeMillis();
+
+        while (
+                packageBoxRepository
+                        .findByPackageCode(packageCode)
+                        .isPresent()
+        ) {
+
+            packageCode =
+                    "PKG-" + System.nanoTime();
+        }
+
         PackageBox box =
                 PackageBox.builder()
-
-                        .packageCode(
-                                "PKG-" + System.currentTimeMillis()
-                        )
-
+                        .packageCode(packageCode)
                         .build();
 
         return packageBoxRepository.save(box);

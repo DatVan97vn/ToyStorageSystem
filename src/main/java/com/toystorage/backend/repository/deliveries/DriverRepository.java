@@ -1,4 +1,13 @@
 package com.toystorage.backend.repository.deliveries;
 
-public interface DriverRepository {
+import com.toystorage.backend.models.deliveries.Driver;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface DriverRepository extends JpaRepository<Driver, Long> {
+
+    Optional<Driver> findByDriverCode(String driverCode);
+
+    boolean existsByDriverCode(String driverCode);
 }

@@ -10,4 +10,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     // Thêm duy nhất dòng này để tìm kiếm Role theo tên (Ví dụ: "ADMIN")
     Optional<Role> findByName(String name);
+    boolean existsByCode(String code);
+
+    Optional<Object> findByCode(String code);
 }
