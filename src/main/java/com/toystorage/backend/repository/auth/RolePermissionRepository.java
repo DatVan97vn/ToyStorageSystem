@@ -11,4 +11,7 @@ public interface RolePermissionRepository
     List<RolePermission> findByRole_Id(Long roleId);
 
     void deleteByRole_Id(Long roleId);
+    boolean existsByRole_IdAndPermission_Id(Long roleId, Long permissionId);
+
+    void deleteByRole_IdAndPermission_Id(Long roleId, Long permissionId);
 }
