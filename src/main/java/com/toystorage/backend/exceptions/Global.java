@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -73,7 +74,7 @@ public class Global {
     public ResponseEntity<Map<String, Object>>
     handleForbidden(Forbidden ex) {
 
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> response = new LinkedHashMap<>();
 
         response.put("timestamp", LocalDateTime.now());
         response.put("status", 403);

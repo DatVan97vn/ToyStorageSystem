@@ -1,13 +1,17 @@
 package com.toystorage.backend.controllers.manifests;
 
 import com.toystorage.backend.enums.manifests.ManifestStatus;
+import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.exceptions.BadRequest;
+import com.toystorage.backend.repository.manifests.ShipmentManifestRepository;
 import com.toystorage.backend.services.manifests.ShipmentManifestService;
+import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/manifests")
@@ -16,7 +20,7 @@ import java.util.Map;
 public class ShipmentManifestController {
 
     private final ShipmentManifestService shipmentManifestService;
-
+    private final ShipmentManifestRepository shipmentManifestRepository;
     @PostMapping
     public ResponseEntity<?> createManifest(
             @RequestBody Map<String, Object> payload
@@ -39,10 +43,15 @@ public class ShipmentManifestController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllManifests() {
-        return ResponseEntity.ok(
-                shipmentManifestService.getAllManifests()
-        );
+    public ResponseEntity<?> getAll() {
+
+        List<ShipmentManifestResponse> responses =
+                shipmentManifestRepository.findAll()
+                        .stream()
+                        .map(ShipmentManifestMapper::toResponse)
+                        .toList();
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
