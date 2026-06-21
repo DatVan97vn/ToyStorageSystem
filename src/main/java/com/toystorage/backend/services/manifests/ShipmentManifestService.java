@@ -1,8 +1,10 @@
 package com.toystorage.backend.services.manifests;
 
+import com.toystorage.backend.dto.response.manifests.ManifestPackageResponse;
 import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.exceptions.BadRequest;
+import com.toystorage.backend.mapper.manifests.ManifestPackageMapper;
 import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.models.manifests.ShipmentManifest;
@@ -65,10 +67,9 @@ public class ShipmentManifestService {
                 .status(ManifestStatus.DRAFT)
                 .build();
 
-        ShipmentManifest savedManifest =
-                shipmentManifestRepository.save(manifest);
-
-        return ShipmentManifestMapper.toResponse(savedManifest);
+        return ShipmentManifestMapper.toResponse(
+                shipmentManifestRepository.save(manifest)
+        );
     }
 
     public ShipmentManifest getManifestById(Long id) {
@@ -89,10 +90,6 @@ public class ShipmentManifestService {
                 .orElseThrow(() -> new BadRequest("MANIFEST_NOT_FOUND"));
     }
 
-    public List<ShipmentManifest> getAllManifests() {
-        return shipmentManifestRepository.findAll();
-    }
-
     @Transactional(readOnly = true)
     public List<ShipmentManifestResponse> getAllManifestResponses() {
         return shipmentManifestRepository.findAll()
@@ -103,41 +100,29 @@ public class ShipmentManifestService {
 
     @Transactional(readOnly = true)
     public ShipmentManifestResponse getManifestResponseById(Long id) {
-        ShipmentManifest manifest = getManifestById(id);
-
-        return ShipmentManifestMapper.toResponse(manifest);
+        return ShipmentManifestMapper.toResponse(
+                getManifestById(id)
+        );
     }
 
     @Transactional(readOnly = true)
     public ShipmentManifestResponse getManifestResponseByCode(
             String manifestCode
     ) {
-        ShipmentManifest manifest = getManifestByCode(manifestCode);
-
-        return ShipmentManifestMapper.toResponse(manifest);
-    }
-
-    public List<ShipmentManifest> getManifestsByFromWarehouse(Long warehouseId) {
-        if (warehouseId == null) {
-            throw new BadRequest("WAREHOUSE_ID_REQUIRED");
-        }
-
-        return shipmentManifestRepository.findByFromWarehouse_Id(warehouseId);
-    }
-
-    public List<ShipmentManifest> getManifestsByToWarehouse(Long warehouseId) {
-        if (warehouseId == null) {
-            throw new BadRequest("WAREHOUSE_ID_REQUIRED");
-        }
-
-        return shipmentManifestRepository.findByToWarehouse_Id(warehouseId);
+        return ShipmentManifestMapper.toResponse(
+                getManifestByCode(manifestCode)
+        );
     }
 
     @Transactional(readOnly = true)
     public List<ShipmentManifestResponse> getManifestResponsesByFromWarehouse(
             Long warehouseId
     ) {
-        return getManifestsByFromWarehouse(warehouseId)
+        if (warehouseId == null) {
+            throw new BadRequest("WAREHOUSE_ID_REQUIRED");
+        }
+
+        return shipmentManifestRepository.findByFromWarehouse_Id(warehouseId)
                 .stream()
                 .map(ShipmentManifestMapper::toResponse)
                 .toList();
@@ -147,7 +132,11 @@ public class ShipmentManifestService {
     public List<ShipmentManifestResponse> getManifestResponsesByToWarehouse(
             Long warehouseId
     ) {
-        return getManifestsByToWarehouse(warehouseId)
+        if (warehouseId == null) {
+            throw new BadRequest("WAREHOUSE_ID_REQUIRED");
+        }
+
+        return shipmentManifestRepository.findByToWarehouse_Id(warehouseId)
                 .stream()
                 .map(ShipmentManifestMapper::toResponse)
                 .toList();
@@ -170,10 +159,9 @@ public class ShipmentManifestService {
 
         manifest.setStatus(status);
 
-        ShipmentManifest savedManifest =
-                shipmentManifestRepository.save(manifest);
-
-        return ShipmentManifestMapper.toResponse(savedManifest);
+        return ShipmentManifestMapper.toResponse(
+                shipmentManifestRepository.save(manifest)
+        );
     }
 
     @Transactional
@@ -202,14 +190,18 @@ public class ShipmentManifestService {
         shipmentManifestPackageRepository.save(manifestPackage);
     }
 
-    public List<ShipmentManifestPackage> getPackagesByManifest(
+    @Transactional(readOnly = true)
+    public List<ManifestPackageResponse> getPackageResponsesByManifest(
             Long manifestId
     ) {
         if (manifestId == null) {
             throw new BadRequest("MANIFEST_ID_REQUIRED");
         }
 
-        return shipmentManifestPackageRepository.findByManifest_Id(manifestId);
+        return shipmentManifestPackageRepository.findByManifest_Id(manifestId)
+                .stream()
+                .map(ManifestPackageMapper::toResponse)
+                .toList();
     }
 
     @Transactional

@@ -3,11 +3,12 @@ package com.toystorage.backend.controllers.manifests;
 import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.exceptions.BadRequest;
-import com.toystorage.backend.mapper.manifests.ManifestPackageMapper;
 import com.toystorage.backend.services.manifests.ShipmentManifestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/manifests")
@@ -22,7 +23,7 @@ public class ShipmentManifestController {
 
     @PostMapping
     public ResponseEntity<?> createManifest(
-            @RequestBody java.util.Map<String, Object> payload
+            @RequestBody Map<String, Object> payload
     ) {
         if (payload == null) {
             throw new BadRequest("PAYLOAD_REQUIRED");
@@ -77,7 +78,9 @@ public class ShipmentManifestController {
             @PathVariable Long warehouseId
     ) {
         return ResponseEntity.ok(
-                shipmentManifestService.getManifestResponsesByFromWarehouse(warehouseId)
+                shipmentManifestService.getManifestResponsesByFromWarehouse(
+                        warehouseId
+                )
         );
     }
 
@@ -86,7 +89,9 @@ public class ShipmentManifestController {
             @PathVariable Long warehouseId
     ) {
         return ResponseEntity.ok(
-                shipmentManifestService.getManifestResponsesByToWarehouse(warehouseId)
+                shipmentManifestService.getManifestResponsesByToWarehouse(
+                        warehouseId
+                )
         );
     }
 
@@ -110,7 +115,9 @@ public class ShipmentManifestController {
                 packageId
         );
 
-        return ResponseEntity.ok("ADD_PACKAGE_TO_MANIFEST_SUCCESS");
+        return ResponseEntity.ok(
+                "ADD_PACKAGE_TO_MANIFEST_SUCCESS"
+        );
     }
 
     @GetMapping("/{manifestId}/packages")
@@ -118,10 +125,9 @@ public class ShipmentManifestController {
             @PathVariable Long manifestId
     ) {
         return ResponseEntity.ok(
-                shipmentManifestService.getPackagesByManifest(manifestId)
-                        .stream()
-                        .map(ManifestPackageMapper::toResponse)
-                        .toList()
+                shipmentManifestService.getPackageResponsesByManifest(
+                        manifestId
+                )
         );
     }
 
@@ -135,6 +141,8 @@ public class ShipmentManifestController {
                 packageId
         );
 
-        return ResponseEntity.ok("REMOVE_PACKAGE_FROM_MANIFEST_SUCCESS");
+        return ResponseEntity.ok(
+                "REMOVE_PACKAGE_FROM_MANIFEST_SUCCESS"
+        );
     }
 }

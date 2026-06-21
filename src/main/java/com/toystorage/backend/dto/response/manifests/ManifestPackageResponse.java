@@ -11,7 +11,7 @@ public class ManifestPackageResponse {
 
     private Long packageId;
 
-    private String boxCode;
+    private String packageCode;
 
     private String status;
 }

@@ -17,7 +17,7 @@ public class ManifestPackageMapper {
                                 : null
                 )
 
-                .boxCode(
+                .packageCode(
                         item.getPackageBox() != null
                                 ? item.getPackageBox().getPackageCode()
                                 : null
