@@ -12,6 +12,8 @@ import com.toystorage.backend.repository.manifests.ShipmentManifestPackageReposi
 import com.toystorage.backend.repository.manifests.ShipmentManifestRepository;
 import com.toystorage.backend.repository.packages.PackageBoxRepository;
 import com.toystorage.backend.repository.warehouses.WarehouseRepository;
+import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
+import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,17 +102,20 @@ public class ShipmentManifestService {
         return shipmentManifestRepository.findByToWarehouse_Id(warehouseId);
     }
 
-    public ShipmentManifest updateStatus(Long id, ManifestStatus status) {
+    public ShipmentManifestResponse updateStatus(Long id, ManifestStatus status) {
         if (status == null) {
             throw new BadRequest("MANIFEST_STATUS_REQUIRED");
         }
 
         ShipmentManifest manifest = getManifestById(id);
+
         manifest.setStatus(status);
 
-        return shipmentManifestRepository.save(manifest);
-    }
+        ShipmentManifest savedManifest =
+                shipmentManifestRepository.save(manifest);
 
+        return ShipmentManifestMapper.toResponse(savedManifest);
+    }
     @Transactional
     public ShipmentManifestPackage addPackageToManifest(
             Long manifestId,
