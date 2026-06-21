@@ -3,16 +3,11 @@ package com.toystorage.backend.controllers.manifests;
 import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.exceptions.BadRequest;
-import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
-import com.toystorage.backend.models.manifests.ShipmentManifest;
-import com.toystorage.backend.services.manifests.ShipmentManifestService;
 import com.toystorage.backend.mapper.manifests.ManifestPackageMapper;
+import com.toystorage.backend.services.manifests.ShipmentManifestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/manifests")
@@ -27,7 +22,7 @@ public class ShipmentManifestController {
 
     @PostMapping
     public ResponseEntity<?> createManifest(
-            @RequestBody Map<String, Object> payload
+            @RequestBody java.util.Map<String, Object> payload
     ) {
         if (payload == null) {
             throw new BadRequest("PAYLOAD_REQUIRED");
@@ -42,38 +37,29 @@ public class ShipmentManifestController {
         Long createdById =
                 Long.valueOf(payload.get("createdById").toString());
 
-        ShipmentManifest manifest =
+        ShipmentManifestResponse response =
                 shipmentManifestService.createManifest(
                         fromWarehouseId,
                         toWarehouseId,
                         createdById
                 );
 
-        return ResponseEntity.ok(
-                ShipmentManifestMapper.toResponse(manifest)
-        );
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<?> getAll() {
-        List<ShipmentManifestResponse> responses =
-                shipmentManifestService.getAllManifests()
-                        .stream()
-                        .map(ShipmentManifestMapper::toResponse)
-                        .toList();
-
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(
+                shipmentManifestService.getAllManifestResponses()
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getManifestById(
             @PathVariable Long id
     ) {
-        ShipmentManifest manifest =
-                shipmentManifestService.getManifestById(id);
-
         return ResponseEntity.ok(
-                ShipmentManifestMapper.toResponse(manifest)
+                shipmentManifestService.getManifestResponseById(id)
         );
     }
 
@@ -81,11 +67,8 @@ public class ShipmentManifestController {
     public ResponseEntity<?> getManifestByCode(
             @PathVariable String manifestCode
     ) {
-        ShipmentManifest manifest =
-                shipmentManifestService.getManifestByCode(manifestCode);
-
         return ResponseEntity.ok(
-                ShipmentManifestMapper.toResponse(manifest)
+                shipmentManifestService.getManifestResponseByCode(manifestCode)
         );
     }
 
@@ -93,28 +76,18 @@ public class ShipmentManifestController {
     public ResponseEntity<?> getManifestsByFromWarehouse(
             @PathVariable Long warehouseId
     ) {
-        List<ShipmentManifestResponse> responses =
-                shipmentManifestService
-                        .getManifestsByFromWarehouse(warehouseId)
-                        .stream()
-                        .map(ShipmentManifestMapper::toResponse)
-                        .toList();
-
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(
+                shipmentManifestService.getManifestResponsesByFromWarehouse(warehouseId)
+        );
     }
 
     @GetMapping("/to-warehouse/{warehouseId}")
     public ResponseEntity<?> getManifestsByToWarehouse(
             @PathVariable Long warehouseId
     ) {
-        List<ShipmentManifestResponse> responses =
-                shipmentManifestService
-                        .getManifestsByToWarehouse(warehouseId)
-                        .stream()
-                        .map(ShipmentManifestMapper::toResponse)
-                        .toList();
-
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(
+                shipmentManifestService.getManifestResponsesByToWarehouse(warehouseId)
+        );
     }
 
     @PutMapping("/{id}/status/{status}")
