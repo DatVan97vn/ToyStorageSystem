@@ -1,7 +1,9 @@
 package com.toystorage.backend.services.manifests;
 
+import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.exceptions.BadRequest;
+import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.models.manifests.ShipmentManifest;
 import com.toystorage.backend.models.manifests.ShipmentManifestPackage;
@@ -12,8 +14,6 @@ import com.toystorage.backend.repository.manifests.ShipmentManifestPackageReposi
 import com.toystorage.backend.repository.manifests.ShipmentManifestRepository;
 import com.toystorage.backend.repository.packages.PackageBoxRepository;
 import com.toystorage.backend.repository.warehouses.WarehouseRepository;
-import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
-import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class ShipmentManifestService {
 
     private final ShipmentManifestRepository shipmentManifestRepository;
     private final ShipmentManifestPackageRepository shipmentManifestPackageRepository;
-
     private final WarehouseRepository warehouseRepository;
     private final UserRepository userRepository;
     private final PackageBoxRepository packageBoxRepository;
@@ -102,7 +101,12 @@ public class ShipmentManifestService {
         return shipmentManifestRepository.findByToWarehouse_Id(warehouseId);
     }
 
+    @Transactional
     public ShipmentManifestResponse updateStatus(Long id, ManifestStatus status) {
+        if (id == null) {
+            throw new BadRequest("MANIFEST_ID_REQUIRED");
+        }
+
         if (status == null) {
             throw new BadRequest("MANIFEST_STATUS_REQUIRED");
         }
@@ -116,6 +120,7 @@ public class ShipmentManifestService {
 
         return ShipmentManifestMapper.toResponse(savedManifest);
     }
+
     @Transactional
     public ShipmentManifestPackage addPackageToManifest(
             Long manifestId,
