@@ -1,99 +1,76 @@
 package com.toystorage.backend.services.transfers;
 
 import com.toystorage.backend.dto.request.transfers.CreateTransferRequest;
+import com.toystorage.backend.dto.response.transfers.TransferResponse;
 import com.toystorage.backend.enums.transfers.TransferStatus;
+import com.toystorage.backend.exceptions.BadRequest;
+import com.toystorage.backend.mapper.transfers.TransferMapper;
 import com.toystorage.backend.models.transfers.StockTransfer;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import com.toystorage.backend.repository.transfers.StockTransferRepository;
+import com.toystorage.backend.repository.warehouses.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/*
- * Service phiếu điều kho
- */
-
 @Service
-
 @RequiredArgsConstructor
-
 public class StockTransferService {
 
     private final StockTransferRepository stockTransferRepository;
+    private final WarehouseRepository warehousesRepository;
 
-    /*
-     * Tạo phiếu điều kho
-     */
-    public StockTransfer createTransfer(
-            CreateTransferRequest request
-    ) {
+    public StockTransfer createTransfer(CreateTransferRequest request) {
+
+        Warehouses fromWarehouse = warehousesRepository.findById(request.getFromWarehouseId())
+                .orElseThrow(() -> new BadRequest("FROM_WAREHOUSE_NOT_FOUND"));
+
+        Warehouses toWarehouse = warehousesRepository.findById(request.getToWarehouseId())
+                .orElseThrow(() -> new BadRequest("TO_WAREHOUSE_NOT_FOUND"));
 
         StockTransfer transfer =
                 StockTransfer.builder()
-
-                        .transferCode(
-                                "TRF-" + System.currentTimeMillis()
-                        )
-
+                        .transferCode("TRF-" + System.currentTimeMillis())
+                        .fromWarehouse(fromWarehouse)
+                        .toWarehouse(toWarehouse)
                         .status(TransferStatus.DRAFT)
-
                         .createdAt(LocalDateTime.now())
-
                         .build();
 
         return stockTransferRepository.save(transfer);
     }
 
-    /*
-     * Danh sách phiếu
-     */
     public List<StockTransfer> getAllTransfers() {
-
         return stockTransferRepository.findAll();
     }
 
-    /*
-     * Chi tiết phiếu
-     */
-    public StockTransfer getTransferById(Long id) {
+    public TransferResponse getTransferById(Long id) {
 
-        return stockTransferRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Transfer not found")
-                );
+        StockTransfer transfer = stockTransferRepository.findById(id)
+                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
+
+        return TransferMapper.toResponse(transfer);
     }
 
-    /*
-     * Approve phiếu
-     */
     public StockTransfer approveTransfer(Long id) {
 
-        StockTransfer transfer =
-                getTransferById(id);
+        StockTransfer transfer = stockTransferRepository.findById(id)
+                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
 
-        transfer.setStatus(
-                TransferStatus.APPROVED
-        );
+        transfer.setStatus(TransferStatus.APPROVED);
 
         return stockTransferRepository.save(transfer);
     }
 
-    /*
-     * Hoàn tất phiếu
-     */
     public StockTransfer completeTransfer(Long id) {
 
-        StockTransfer transfer =
-                getTransferById(id);
+        StockTransfer transfer = stockTransferRepository.findById(id)
+                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
 
-        transfer.setStatus(
-                TransferStatus.COMPLETED
-        );
-
-        transfer.setCompletedAt(
-                LocalDateTime.now()
-        );
+        transfer.setStatus(TransferStatus.COMPLETED);
+        transfer.setCompletedAt(LocalDateTime.now());
 
         return stockTransferRepository.save(transfer);
     }
