@@ -6,6 +6,7 @@ import com.toystorage.backend.exceptions.BadRequest;
 import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import com.toystorage.backend.models.manifests.ShipmentManifest;
 import com.toystorage.backend.services.manifests.ShipmentManifestService;
+import com.toystorage.backend.mapper.manifests.ManifestPackageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -136,12 +137,7 @@ public class ShipmentManifestController {
                 packageId
         );
 
-        ShipmentManifest manifest =
-                shipmentManifestService.getManifestById(manifestId);
-
-        return ResponseEntity.ok(
-                ShipmentManifestMapper.toResponse(manifest)
-        );
+        return ResponseEntity.ok("ADD_PACKAGE_TO_MANIFEST_SUCCESS");
     }
 
     @GetMapping("/{manifestId}/packages")
@@ -150,6 +146,9 @@ public class ShipmentManifestController {
     ) {
         return ResponseEntity.ok(
                 shipmentManifestService.getPackagesByManifest(manifestId)
+                        .stream()
+                        .map(ManifestPackageMapper::toResponse)
+                        .toList()
         );
     }
 
