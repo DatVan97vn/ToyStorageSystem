@@ -1,7 +1,9 @@
 package com.toystorage.backend.controllers.auth;
 
+import com.toystorage.backend.dto.request.auth.*;
 import com.toystorage.backend.enums.users.UserStatus;
 import com.toystorage.backend.exceptions.BadRequest;
+import com.toystorage.backend.mapper.auth.AuthMapper;
 import com.toystorage.backend.mapper.auth.UserMapper;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.services.auth.UserService;
@@ -18,80 +20,60 @@ public class AuthController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final AuthMapper authMapper;
 
-    // ================= REGISTER (PUBLIC) =================
     @PostMapping("/register")
-    public ResponseEntity<?> register(
-            @RequestParam String Name,
-            @RequestParam String email,
-            @RequestParam String password
-    ) {
-        if (userService.findByEmail(email) != null) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        if (userService.findByEmail(request.getEmail()) != null) {
             throw new BadRequest("EMAIL_ALREADY_EXISTS");
         }
 
-        if (password == null || password.length() < 6) {
+        if (request.getPassword() == null || request.getPassword().length() < 6) {
             throw new BadRequest("PASSWORD_TOO_SHORT");
         }
 
-        User user = new User();
-        user.setName(Name);
-        user.setEmail(email.trim());
-        user.setPassword(userService.encodePassword(password));
-        user.setStatus(UserStatus.ACTIVE);
-        user.setFirstLogin(false);
-        user.setTwoFactorEnabled(false);
+        User user = authMapper.toUser(
+                request,
+                userService.encodePassword(request.getPassword())
+        );
 
         userService.save(user);
 
         return ResponseEntity.ok("REGISTER_SUCCESS");
     }
 
-    // ================= REGISTER STAFF =================
     @PostMapping("/register-staff")
-    public ResponseEntity<?> registerStaff(
-            @RequestParam String Name,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String role
-    ) {
-        if (userService.findByEmail(email) != null) {
+    public ResponseEntity<?> registerStaff(@RequestBody RegisterStaffRequest request) {
+        if (userService.findByEmail(request.getEmail()) != null) {
             throw new BadRequest("EMAIL_ALREADY_EXISTS");
         }
 
-        if (password == null || password.length() < 6) {
+        if (request.getPassword() == null || request.getPassword().length() < 6) {
             throw new BadRequest("PASSWORD_TOO_SHORT");
         }
 
-        User staff = new User();
-        staff.setName(Name);
-        staff.setEmail(email.trim());
-        staff.setPassword(userService.encodePassword(password));
-        staff.setStatus(UserStatus.ACTIVE);
-        staff.setFirstLogin(true);
-        staff.setTwoFactorEnabled(false);
-
-        User savedStaff = userService.saveStaffWithRole(staff, role);
-
-        return ResponseEntity.ok(
-                userMapper.toResponse(savedStaff)
+        User staff = authMapper.toStaff(
+                request,
+                userService.encodePassword(request.getPassword())
         );
+
+        User savedStaff = userService.saveStaffWithRole(staff, request.getRole());
+
+        return ResponseEntity.ok(userMapper.toResponse(savedStaff));
     }
 
-    // ================= LOGIN =================
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestParam String email,
-            @RequestParam String password,
+            @RequestBody LoginRequest request,
             HttpSession session
     ) {
-        User user = userService.findByEmail(email);
+        User user = userService.findByEmail(request.getEmail());
 
         if (user == null) {
             throw new BadRequest("USER_NOT_FOUND");
         }
 
-        if (!userService.checkPassword(password, user.getPassword())) {
+        if (!userService.checkPassword(request.getPassword(), user.getPassword())) {
             throw new BadRequest("INVALID_PASSWORD");
         }
 
@@ -117,10 +99,9 @@ public class AuthController {
         return ResponseEntity.ok("REQUIRE_OTP");
     }
 
-    // ================= CHANGE PASSWORD =================
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
-            @RequestParam String newPassword,
+            @RequestBody ChangePasswordRequest request,
             HttpSession session
     ) {
         User sessionUser = (User) session.getAttribute("user");
@@ -129,7 +110,7 @@ public class AuthController {
             throw new BadRequest("NOT_LOGIN");
         }
 
-        if (newPassword == null || newPassword.length() < 6) {
+        if (request.getNewPassword() == null || request.getNewPassword().length() < 6) {
             throw new BadRequest("PASSWORD_TOO_SHORT");
         }
 
@@ -139,7 +120,7 @@ public class AuthController {
             throw new BadRequest("USER_NOT_FOUND");
         }
 
-        userService.changePassword(user, newPassword);
+        userService.changePassword(user, request.getNewPassword());
         user.setFirstLogin(false);
 
         session.setAttribute("user", user);
@@ -147,7 +128,6 @@ public class AuthController {
         return ResponseEntity.ok("PASSWORD_CHANGED");
     }
 
-    // ================= CURRENT USER =================
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
         User user = (User) session.getAttribute("user");
@@ -161,16 +141,12 @@ public class AuthController {
             throw new BadRequest("NOT_AUTHENTICATED");
         }
 
-        return ResponseEntity.ok(
-                userMapper.toResponse(user)
-        );
+        return ResponseEntity.ok(userMapper.toResponse(user));
     }
 
-    // ================= LOGOUT =================
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate();
-
         return ResponseEntity.ok("LOGOUT_SUCCESS");
     }
 }
