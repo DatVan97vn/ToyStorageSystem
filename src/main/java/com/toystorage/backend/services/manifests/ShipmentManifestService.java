@@ -99,10 +99,16 @@ public class ShipmentManifestService {
     }
 
     @Transactional(readOnly = true)
-    public ShipmentManifestResponse getManifestResponseById(Long id) {
-        return ShipmentManifestMapper.toResponse(
-                getManifestById(id)
-        );
+    public ShipmentManifestResponse getManifestResponseById(
+            Long id
+    ) {
+        ShipmentManifest manifest =
+                shipmentManifestRepository.findDetailById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("MANIFEST_NOT_FOUND")
+                        );
+
+        return ShipmentManifestMapper.toResponse(manifest);
     }
 
     @Transactional(readOnly = true)
