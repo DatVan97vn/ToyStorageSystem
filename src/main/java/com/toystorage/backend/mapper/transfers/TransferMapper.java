@@ -3,6 +3,7 @@ package com.toystorage.backend.mapper.transfers;
 import com.toystorage.backend.dto.response.transfers.TransferResponse;
 import com.toystorage.backend.dto.response.warehouses.WarehouseResponse;
 import com.toystorage.backend.models.transfers.StockTransfer;
+import com.toystorage.backend.models.transfers.StockTransferItems;
 
 import java.util.List;
 
@@ -10,6 +11,13 @@ public class TransferMapper {
 
     public static TransferResponse toResponse(
             StockTransfer transfer
+    ) {
+        return toResponse(transfer, List.of());
+    }
+
+    public static TransferResponse toResponse(
+            StockTransfer transfer,
+            List<StockTransferItems> items
     ) {
         if (transfer == null) {
             return null;
@@ -49,7 +57,13 @@ public class TransferMapper {
                 .approvedAt(transfer.getApprovedAt())
                 .completedAt(transfer.getCompletedAt())
 
-                .items(List.of())
+                .items(
+                        items == null
+                                ? List.of()
+                                : items.stream()
+                                .map(TransferItemMapper::toResponse)
+                                .toList()
+                )
 
                 .build();
     }
