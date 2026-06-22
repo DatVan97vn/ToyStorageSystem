@@ -11,6 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/work-sessions")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class WorkSessionController {
 
     private final WorkSessionService workSessionService;

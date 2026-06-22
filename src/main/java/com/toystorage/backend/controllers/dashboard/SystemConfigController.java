@@ -12,6 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/dashboard/config")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class SystemConfigController {
 
     private final SystemConfigService systemConfigService;

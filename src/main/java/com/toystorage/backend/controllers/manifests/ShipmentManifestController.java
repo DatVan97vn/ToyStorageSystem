@@ -13,10 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/manifests")
 @RequiredArgsConstructor
-@CrossOrigin(
-        origins = "http://localhost:5173",
-        allowCredentials = "true"
-)
+@CrossOrigin(origins = "*")
 public class ShipmentManifestController {
 
     private final ShipmentManifestService shipmentManifestService;
