@@ -11,6 +11,7 @@ import com.toystorage.backend.repository.transfers.StockTransferRepository;
 import com.toystorage.backend.repository.warehouses.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,15 +21,35 @@ import java.util.List;
 public class StockTransferService {
 
     private final StockTransferRepository stockTransferRepository;
-    private final WarehouseRepository warehousesRepository;
+    private final WarehouseRepository warehouseRepository;
 
-    public StockTransfer createTransfer(CreateTransferRequest request) {
+    @Transactional
+    public TransferResponse createTransfer(
+            CreateTransferRequest request
+    ) {
+        if (request == null) {
+            throw new BadRequest("TRANSFER_REQUEST_REQUIRED");
+        }
 
-        Warehouses fromWarehouse = warehousesRepository.findById(request.getFromWarehouseId())
-                .orElseThrow(() -> new BadRequest("FROM_WAREHOUSE_NOT_FOUND"));
+        if (request.getFromWarehouseId() == null) {
+            throw new BadRequest("FROM_WAREHOUSE_ID_REQUIRED");
+        }
 
-        Warehouses toWarehouse = warehousesRepository.findById(request.getToWarehouseId())
-                .orElseThrow(() -> new BadRequest("TO_WAREHOUSE_NOT_FOUND"));
+        if (request.getToWarehouseId() == null) {
+            throw new BadRequest("TO_WAREHOUSE_ID_REQUIRED");
+        }
+
+        Warehouses fromWarehouse =
+                warehouseRepository.findById(request.getFromWarehouseId())
+                        .orElseThrow(() ->
+                                new BadRequest("FROM_WAREHOUSE_NOT_FOUND")
+                        );
+
+        Warehouses toWarehouse =
+                warehouseRepository.findById(request.getToWarehouseId())
+                        .orElseThrow(() ->
+                                new BadRequest("TO_WAREHOUSE_NOT_FOUND")
+                        );
 
         StockTransfer transfer =
                 StockTransfer.builder()
@@ -39,39 +60,74 @@ public class StockTransferService {
                         .createdAt(LocalDateTime.now())
                         .build();
 
-        return stockTransferRepository.save(transfer);
+        StockTransfer saved =
+                stockTransferRepository.save(transfer);
+
+        return TransferMapper.toResponse(saved);
     }
 
-    public List<StockTransfer> getAllTransfers() {
-        return stockTransferRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<TransferResponse> getAllTransfers() {
+        return stockTransferRepository.findAllWithWarehouses()
+                .stream()
+                .map(TransferMapper::toResponse)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public TransferResponse getTransferById(Long id) {
+        if (id == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
 
-        StockTransfer transfer = stockTransferRepository.findById(id)
-                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
+        StockTransfer transfer =
+                stockTransferRepository.findDetailById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("TRANSFER_NOT_FOUND")
+                        );
 
         return TransferMapper.toResponse(transfer);
     }
 
-    public StockTransfer approveTransfer(Long id) {
+    @Transactional
+    public TransferResponse approveTransfer(Long id) {
+        if (id == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
 
-        StockTransfer transfer = stockTransferRepository.findById(id)
-                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
+        StockTransfer transfer =
+                stockTransferRepository.findDetailById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("TRANSFER_NOT_FOUND")
+                        );
 
         transfer.setStatus(TransferStatus.APPROVED);
+        transfer.setApprovedAt(LocalDateTime.now());
 
-        return stockTransferRepository.save(transfer);
+        StockTransfer saved =
+                stockTransferRepository.save(transfer);
+
+        return TransferMapper.toResponse(saved);
     }
 
-    public StockTransfer completeTransfer(Long id) {
+    @Transactional
+    public TransferResponse completeTransfer(Long id) {
+        if (id == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
 
-        StockTransfer transfer = stockTransferRepository.findById(id)
-                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
+        StockTransfer transfer =
+                stockTransferRepository.findDetailById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("TRANSFER_NOT_FOUND")
+                        );
 
         transfer.setStatus(TransferStatus.COMPLETED);
         transfer.setCompletedAt(LocalDateTime.now());
 
-        return stockTransferRepository.save(transfer);
+        StockTransfer saved =
+                stockTransferRepository.save(transfer);
+
+        return TransferMapper.toResponse(saved);
     }
 }

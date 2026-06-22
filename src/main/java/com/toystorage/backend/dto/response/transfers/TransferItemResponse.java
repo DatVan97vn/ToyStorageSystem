@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class TransferItemResponse {
 
+    private Long id;
+
     private Long productId;
     private String productName;
 

@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/*
- * API phiếu điều kho
- */
 @RestController
 @RequestMapping("/api/transfers")
 @RequiredArgsConstructor
+
 public class StockTransferController {
 
     private final StockTransferService stockTransferService;

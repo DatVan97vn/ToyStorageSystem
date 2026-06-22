@@ -7,9 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/*
- * API scan barcode
- */
 @RestController
 @RequestMapping("/api/scans")
 @RequiredArgsConstructor
@@ -17,14 +14,10 @@ public class TransferScanController {
 
     private final TransferScanService transferScanService;
 
-    /*
-     * Scan barcode
-     */
     @PostMapping
     public ResponseEntity<?> scanBarcode(
             @RequestBody ScanBarcodeRequest request
     ) {
-
         if (request == null) {
             throw new BadRequest("SCAN_REQUEST_REQUIRED");
         }
