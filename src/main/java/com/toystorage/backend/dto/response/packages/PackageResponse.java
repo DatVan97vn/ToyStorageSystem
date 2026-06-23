@@ -15,6 +15,12 @@ public class PackageResponse {
     private Long transferId;
     private String transferCode;
 
+    private Long fromWarehouseId;
+    private String fromWarehouseName;
+
+    private Long toWarehouseId;
+    private String toWarehouseName;
+
     private Long warehouseId;
     private String warehouseName;
 
