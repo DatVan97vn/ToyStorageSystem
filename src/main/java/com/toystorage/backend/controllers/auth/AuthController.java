@@ -7,6 +7,8 @@ import com.toystorage.backend.mapper.auth.AuthMapper;
 import com.toystorage.backend.mapper.auth.UserMapper;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.services.auth.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -58,23 +60,31 @@ public class AuthController {
                 userService.encodePassword(request.getPassword())
         );
 
+        // Bắt buộc staff/admin lần đầu đăng nhập phải đổi mật khẩu
+        staff.setFirstLogin(true);
+
+        // Đảm bảo tài khoản active
+        staff.setStatus(UserStatus.ACTIVE);
+
+        // Chưa xác thực 2FA
+        staff.setTwoFactorEnabled(false);
+
         User savedStaff = userService.saveStaffWithRole(staff, request.getRole());
 
         return ResponseEntity.ok(userMapper.toResponse(savedStaff));
     }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestBody LoginRequest request,
-            HttpSession session
+            @RequestBody LoginRequest loginRequest,
+            HttpServletRequest httpRequest
     ) {
-        User user = userService.findByEmail(request.getEmail());
+        User user = userService.findByEmail(loginRequest.getEmail());
 
         if (user == null) {
             throw new BadRequest("USER_NOT_FOUND");
         }
 
-        if (!userService.checkPassword(request.getPassword(), user.getPassword())) {
+        if (!userService.checkPassword(loginRequest.getPassword(), user.getPassword())) {
             throw new BadRequest("INVALID_PASSWORD");
         }
 
@@ -82,24 +92,40 @@ public class AuthController {
             throw new BadRequest("ACCOUNT_NOT_ACTIVE");
         }
 
-        session.setAttribute("user", user);
+        // Xóa session cũ nếu có
+        HttpSession oldSession = httpRequest.getSession(false);
+
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+
+        // Tạo session mới cho lần login mới
+        HttpSession session = httpRequest.getSession(true);
+
+        User freshUser = userService.findByEmail(loginRequest.getEmail());
+
+        session.setAttribute("user", freshUser);
+
+        // Quan trọng: mỗi lần login đều chưa xác thực OTP
         session.setAttribute("authenticated", false);
 
-        if (Boolean.TRUE.equals(user.getFirstLogin())) {
+        // Lần đầu đăng nhập: bắt đổi mật khẩu
+        if (Boolean.TRUE.equals(freshUser.getFirstLogin())) {
             return ResponseEntity.ok("REQUIRE_CHANGE_PASSWORD");
         }
 
+        // Chưa setup 2FA: bắt setup 2FA
         if (
-                user.getTwoFactorSecret() == null
-                        || user.getTwoFactorSecret().isBlank()
-                        || !Boolean.TRUE.equals(user.getTwoFactorEnabled())
+                freshUser.getTwoFactorSecret() == null
+                        || freshUser.getTwoFactorSecret().isBlank()
+                        || !Boolean.TRUE.equals(freshUser.getTwoFactorEnabled())
         ) {
             return ResponseEntity.ok("REQUIRE_2FA_SETUP");
         }
 
+        // Đã setup 2FA: mỗi lần đăng nhập đều bắt nhập OTP
         return ResponseEntity.ok("REQUIRE_OTP");
     }
-
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestBody ChangePasswordRequest request,
