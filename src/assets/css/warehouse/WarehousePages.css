@@ -1,0 +1,130 @@
+.warehouse-page {
+    min-height: 100vh;
+    background: #ffffff;
+    padding: 24px;
+}
+
+.warehouse-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.warehouse-page-title {
+    margin: 0;
+    font-size: 38px;
+    font-weight: 900;
+    color: #ea580b;
+    letter-spacing: 0.5px;
+}
+
+.warehouse-page-subtitle {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.warehouse-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.warehouse-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.warehouse-stat-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-left: 5px solid #f97316;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.warehouse-stat-label {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.warehouse-stat-value {
+    margin: 8px 0 0;
+    color: #ea580b;
+    font-size: 42px;
+    font-weight: 900;
+}
+
+.warehouse-card-title {
+    margin: 0 0 18px;
+    font-size: 26px;
+    font-weight: 900;
+    color: #ea580b;
+}
+
+.warehouse-card-title {
+    margin: 0 0 18px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #f97316;
+}
+
+.warehouse-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.warehouse-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.warehouse-info-item {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.warehouse-info-label {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.warehouse-info-value {
+    margin: 6px 0 0;
+    color: #111827;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.barcode-form {
+    display: grid;
+    grid-template-columns: 3fr 1fr auto;
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .warehouse-stat-grid,
+    .warehouse-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .warehouse-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .barcode-form {
+        grid-template-columns: 1fr;
+    }
+}

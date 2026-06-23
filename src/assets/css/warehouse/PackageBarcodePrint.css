@@ -1,0 +1,69 @@
+.package-print-page {
+    min-height: 100vh;
+    background: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.package-print-a6 {
+    width: 105mm;
+    min-height: 148mm;
+    background: #ffffff;
+    padding: 8mm;
+    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    text-align: center;
+}
+
+.package-print-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin: 0 0 10px;
+    color: #111827;
+}
+
+.package-print-info {
+    margin-top: 10px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.package-print-btn {
+    margin-top: 18px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #f59e0b;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@page {
+    size: A6;
+    margin: 0;
+}
+
+@media print {
+    body {
+        margin: 0;
+    }
+
+    .package-print-page {
+        background: white;
+        min-height: auto;
+        display: block;
+    }
+
+    .package-print-a6 {
+        width: 105mm;
+        height: 148mm;
+        border: none;
+    }
+
+    .package-print-btn {
+        display: none;
+    }
+}

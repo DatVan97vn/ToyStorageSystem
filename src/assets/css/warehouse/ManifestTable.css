@@ -1,0 +1,112 @@
+.manifest-table-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.manifest-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.manifest-table thead {
+    background: #fff7ed;
+}
+
+.manifest-table th {
+    padding: 15px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 800;
+    color: #f97316;
+    border-bottom: 1px solid #fed7aa;
+    white-space: nowrap;
+}
+
+.manifest-table td {
+    padding: 15px 16px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.manifest-table tbody tr {
+    transition: 0.2s ease;
+}
+
+.manifest-table tbody tr:hover {
+    background: #fffaf5;
+}
+
+.manifest-code {
+    font-weight: 700;
+    color: #111827 !important;
+}
+
+.manifest-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.manifest-empty {
+    text-align: center;
+    color: #6b7280 !important;
+    padding: 28px !important;
+}
+.manifest-action-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.manifest-btn {
+    min-width: 130px;
+    padding: 10px 16px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* nền trắng chữ cam */
+.manifest-btn-outline {
+    background: #ffffff !important;
+    color: #f97316 !important;
+    border: 1px solid #f97316 !important;
+}
+
+.manifest-btn-outline:hover {
+    background: #f97316 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(249, 115, 22, 0.25);
+}
+
+/* nền cam chữ trắng */
+.manifest-btn-filled {
+    background: #f97316 !important;
+    color: #ffffff !important;
+    border: 1px solid #f97316 !important;
+}
+
+.manifest-btn-filled:hover {
+    background: #ffffff !important;
+    color: #f97316 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(249, 115, 22, 0.25);
+}
+@media (max-width: 900px) {
+    .manifest-table-card {
+        overflow-x: auto;
+    }
+
+    .manifest-table {
+        min-width: 760px;
+    }
+}

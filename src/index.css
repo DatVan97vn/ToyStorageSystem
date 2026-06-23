@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #111827;
+  font-family: Inter, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.page-container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f97316;
+  margin-bottom: 24px;
+}
+
+.warehouse-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+
+.warehouse-table {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.warehouse-table thead {
+  background: #ffffff;
+  border-bottom: 2px solid #fed7aa;
+}
+
+.warehouse-table th {
+  color: #f97316;
+  font-weight: 600;
+}
+
+.warehouse-table tbody tr:hover {
+  background: #fff7ed;
+}
+
+.primary-btn {
+  background: #f97316;
+  color: white;
+}
+
+.primary-btn:hover {
+  background: #ea580c;
+}
+
+.outline-btn {
+  border: 1px solid #f97316;
+  color: #f97316;
+  background: white;
+}
+
+.outline-btn:hover {
+  background: #fff7ed;
+}

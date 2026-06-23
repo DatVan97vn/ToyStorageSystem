@@ -1,0 +1,32 @@
+.barcode-scanner-panel {
+    background: #fff;
+    border: 1px solid #f59e0b;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.barcode-scanner-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 15px;
+}
+
+.barcode-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    outline: none;
+}
+
+.barcode-input:focus {
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+}
+
+.barcode-hint {
+    margin-top: 10px;
+    color: #6b7280;
+    font-size: 13px;
+}
