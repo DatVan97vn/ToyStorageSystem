@@ -1,14 +1,12 @@
 package com.toystorage.backend.controllers.packages;
 
+import com.toystorage.backend.dto.request.packages.CreatePackageRequest;
 import com.toystorage.backend.exceptions.BadRequest;
 import com.toystorage.backend.services.packages.PackageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/*
- * API kiện hàng
- */
 @RestController
 @RequestMapping("/api/packages")
 @RequiredArgsConstructor
@@ -17,31 +15,41 @@ public class PackageController {
 
     private final PackageService packageService;
 
-    /*
-     * Tạo kiện hàng
-     * POST /api/packages
-     */
     @PostMapping
-    public ResponseEntity<?> createPackage() {
-
-        Object createdPackage = packageService.createPackage();
-
-        if (createdPackage == null) {
-            throw new BadRequest("PACKAGE_CREATE_FAILED");
+    public ResponseEntity<?> createPackages(
+            @RequestBody CreatePackageRequest request
+    ) {
+        if (request == null) {
+            throw new BadRequest("PACKAGE_REQUEST_REQUIRED");
         }
 
-        return ResponseEntity.ok(createdPackage);
+        return ResponseEntity.ok(
+                packageService.createPackages(request)
+        );
     }
 
-    /*
-     * Danh sách kiện hàng
-     * GET /api/packages
-     */
     @GetMapping
     public ResponseEntity<?> getAllPackages() {
-
         return ResponseEntity.ok(
                 packageService.getAllPackages()
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPackageById(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                packageService.getPackageById(id)
+        );
+    }
+
+    @GetMapping("/transfer/{transferId}")
+    public ResponseEntity<?> getPackagesByTransfer(
+            @PathVariable Long transferId
+    ) {
+        return ResponseEntity.ok(
+                packageService.getPackagesByTransfer(transferId)
         );
     }
 }

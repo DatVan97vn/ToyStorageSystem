@@ -1,55 +1,100 @@
 package com.toystorage.backend.services.packages;
 
+import com.toystorage.backend.dto.request.packages.CreatePackageRequest;
+import com.toystorage.backend.exceptions.BadRequest;
 import com.toystorage.backend.models.packages.PackageBox;
+import com.toystorage.backend.models.transfers.StockTransfer;
+import com.toystorage.backend.models.warehouses.Warehouses;
 import com.toystorage.backend.repository.packages.PackageBoxRepository;
+import com.toystorage.backend.repository.transfers.StockTransferRepository;
+import com.toystorage.backend.repository.warehouses.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Service kiện hàng
- */
-
 @Service
-
 @RequiredArgsConstructor
-
 public class PackageService {
 
     private final PackageBoxRepository packageBoxRepository;
+    private final StockTransferRepository stockTransferRepository;
+    private final WarehouseRepository warehouseRepository;
 
-    /*
-     * Tạo kiện hàng
-     */
-    public PackageBox createPackage() {
-
-        String packageCode =
-                "PKG-" + System.currentTimeMillis();
-
-        while (
-                packageBoxRepository
-                        .findByPackageCode(packageCode)
-                        .isPresent()
-        ) {
-
-            packageCode =
-                    "PKG-" + System.nanoTime();
+    public List<PackageBox> createPackages(
+            CreatePackageRequest request
+    ) {
+        if (request == null) {
+            throw new BadRequest("PACKAGE_REQUEST_REQUIRED");
         }
 
-        PackageBox box =
-                PackageBox.builder()
-                        .packageCode(packageCode)
-                        .build();
+        if (request.getTransferId() == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
 
-        return packageBoxRepository.save(box);
+        if (request.getQuantity() == null || request.getQuantity() <= 0) {
+            throw new BadRequest("PACKAGE_QUANTITY_INVALID");
+        }
+
+        StockTransfer transfer =
+                stockTransferRepository.findById(request.getTransferId())
+                        .orElseThrow(() ->
+                                new BadRequest("TRANSFER_NOT_FOUND")
+                        );
+
+        Warehouses warehouse = null;
+
+        if (request.getWarehouseId() != null) {
+            warehouse =
+                    warehouseRepository.findById(request.getWarehouseId())
+                            .orElseThrow(() ->
+                                    new BadRequest("WAREHOUSE_NOT_FOUND")
+                            );
+        }
+
+        List<PackageBox> boxes = new ArrayList<>();
+
+        for (int i = 0; i < request.getQuantity(); i++) {
+            PackageBox box =
+                    PackageBox.builder()
+                            .packageCode(generatePackageCode())
+                            .transfer(transfer)
+                            .warehouse(warehouse)
+                            .note(request.getNote())
+                            .build();
+
+            boxes.add(packageBoxRepository.save(box));
+        }
+
+        return boxes;
     }
 
-    /*
-     * Danh sách kiện
-     */
     public List<PackageBox> getAllPackages() {
-
         return packageBoxRepository.findAll();
+    }
+
+    public List<PackageBox> getPackagesByTransfer(Long transferId) {
+        if (transferId == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
+
+        return packageBoxRepository.findByTransfer_Id(transferId);
+    }
+
+    public PackageBox getPackageById(Long id) {
+        return packageBoxRepository.findById(id)
+                .orElseThrow(() -> new BadRequest("PACKAGE_NOT_FOUND"));
+    }
+
+    private String generatePackageCode() {
+        String code =
+                "BOX-" + System.currentTimeMillis();
+
+        while (packageBoxRepository.findByPackageCode(code).isPresent()) {
+            code = "BOX-" + System.nanoTime();
+        }
+
+        return code;
     }
 }
