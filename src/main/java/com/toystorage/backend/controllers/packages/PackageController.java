@@ -70,4 +70,18 @@ public class PackageController {
 
         return ResponseEntity.ok(responses);
     }
+    @PutMapping("/{id}/close")
+    public ResponseEntity<?> closePackage(
+            @PathVariable Long id
+    ) {
+        if (id == null) {
+            throw new BadRequest("PACKAGE_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                PackageMapper.toResponse(
+                        packageService.closePackage(id)
+                )
+        );
+    }
 }

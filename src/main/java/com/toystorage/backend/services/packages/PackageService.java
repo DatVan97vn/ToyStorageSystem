@@ -9,6 +9,7 @@ import com.toystorage.backend.repository.packages.PackageBoxRepository;
 import com.toystorage.backend.repository.transfers.StockTransferRepository;
 import com.toystorage.backend.repository.warehouses.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
+import com.toystorage.backend.enums.packages.PackageStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -96,5 +97,16 @@ public class PackageService {
         }
 
         return code;
+    }
+    public PackageBox closePackage(Long id) {
+        PackageBox box =
+                packageBoxRepository.findById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("PACKAGE_NOT_FOUND")
+                        );
+
+        box.setStatus(PackageStatus.SEALED);
+
+        return packageBoxRepository.save(box);
     }
 }
