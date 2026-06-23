@@ -40,11 +40,13 @@ public class TransferScanService {
             throw new BadRequest("QUANTITY_INVALID");
         }
 
+        String barcode = request.getBarcode().trim();
+
         StockTransferItems transferItem =
                 stockTransferItemRepository
                         .findByTransfer_IdAndProduct_Barcode(
                                 request.getTransferId(),
-                                request.getBarcode()
+                                barcode
                         )
                         .orElseThrow(() ->
                                 new BadRequest("PRODUCT_NOT_IN_TRANSFER")
@@ -52,14 +54,58 @@ public class TransferScanService {
 
         ScanType scanType =
                 request.getScanType() == null
-                        ? ScanType.RECEIVE
+                        ? ScanType.PICK
                         : ScanType.valueOf(request.getScanType());
+
+        Integer quantity = request.getQuantity();
+
+        if (scanType == ScanType.PICK) {
+            Integer currentPicked =
+                    transferItem.getPickedQuantity() == null
+                            ? 0
+                            : transferItem.getPickedQuantity();
+
+            Integer requested =
+                    transferItem.getRequestedQuantity() == null
+                            ? 0
+                            : transferItem.getRequestedQuantity();
+
+            if (currentPicked + quantity > requested) {
+                throw new BadRequest("PICKED_QUANTITY_EXCEED_REQUESTED");
+            }
+
+            transferItem.setPickedQuantity(
+                    currentPicked + quantity
+            );
+        }
+
+        if (scanType == ScanType.RECEIVE) {
+            Integer currentReceived =
+                    transferItem.getReceivedQuantity() == null
+                            ? 0
+                            : transferItem.getReceivedQuantity();
+
+            Integer requested =
+                    transferItem.getRequestedQuantity() == null
+                            ? 0
+                            : transferItem.getRequestedQuantity();
+
+            if (currentReceived + quantity > requested) {
+                throw new BadRequest("RECEIVED_QUANTITY_EXCEED_REQUESTED");
+            }
+
+            transferItem.setReceivedQuantity(
+                    currentReceived + quantity
+            );
+        }
+
+        stockTransferItemRepository.save(transferItem);
 
         TransferScans scan =
                 TransferScans.builder()
                         .transferItem(transferItem)
-                        .barcode(request.getBarcode())
-                        .quantity(request.getQuantity())
+                        .barcode(barcode)
+                        .quantity(quantity)
                         .scanType(scanType)
                         .build();
 
