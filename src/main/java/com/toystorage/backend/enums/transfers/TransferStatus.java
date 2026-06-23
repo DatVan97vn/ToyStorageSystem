@@ -2,19 +2,19 @@ package com.toystorage.backend.enums.transfers;
 
 public enum TransferStatus {
 
-    DRAFT,
+    DRAFT,          // mới tạo phiếu
 
-    APPROVED,
+    APPROVED,       // trưởng kho duyệt
 
-    PICKING,
+    PICKING,        // nhân viên đang lấy hàng
 
-    PACKING,
+    PACKING,        // đang đóng thùng
 
-    SHIPPED,
+    SHIPPED,        // đã xuất kho
 
-    RECEIVING,
+    RECEIVING,      // kho nhận đang kiểm
 
-    COMPLETED,
+    COMPLETED,      // hoàn tất
 
     CANCELLED
 }

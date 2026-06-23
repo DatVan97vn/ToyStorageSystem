@@ -6,6 +6,7 @@ import com.toystorage.backend.services.transfers.StockTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.toystorage.backend.enums.transfers.TransferStatus;
 
 @RestController
 @RequestMapping("/api/transfers")
@@ -71,6 +72,19 @@ public class StockTransferController {
 
         return ResponseEntity.ok(
                 stockTransferService.completeTransfer(id)
+        );
+    }
+    @PutMapping("/{id}/status/{status}")
+    public ResponseEntity<?> updateTransferStatus(
+            @PathVariable Long id,
+            @PathVariable TransferStatus status
+    ) {
+        if (id == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                stockTransferService.updateTransferStatus(id, status)
         );
     }
 }

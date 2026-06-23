@@ -176,4 +176,52 @@ public class StockTransferService {
 
         return TransferMapper.toResponse(saved, items);
     }
+    @Transactional
+    public TransferResponse updateTransferStatus(
+            Long id,
+            TransferStatus status
+    ) {
+        if (id == null) {
+            throw new BadRequest("TRANSFER_ID_REQUIRED");
+        }
+
+        if (status == null) {
+            throw new BadRequest("TRANSFER_STATUS_REQUIRED");
+        }
+
+        StockTransfer transfer =
+                stockTransferRepository.findDetailById(id)
+                        .orElseThrow(() ->
+                                new BadRequest("TRANSFER_NOT_FOUND")
+                        );
+
+        LocalDateTime now = LocalDateTime.now();
+
+        transfer.setStatus(status);
+
+        if (status == TransferStatus.PICKING) {
+            transfer.setStartedPickAt(now);
+        }
+
+        if (status == TransferStatus.PACKING) {
+            transfer.setCompletedPickAt(now);
+        }
+
+        if (status == TransferStatus.RECEIVING) {
+            transfer.setStartedReceiveAt(now);
+        }
+
+        if (status == TransferStatus.COMPLETED) {
+            transfer.setCompletedReceiveAt(now);
+            transfer.setCompletedAt(now);
+        }
+
+        StockTransfer saved =
+                stockTransferRepository.save(transfer);
+
+        List<StockTransferItems> items =
+                stockTransferItemRepository.findByTransfer_Id(id);
+
+        return TransferMapper.toResponse(saved, items);
+    }
 }
