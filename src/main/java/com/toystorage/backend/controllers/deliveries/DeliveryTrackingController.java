@@ -11,7 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/delivery-tracking")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class DeliveryTrackingController {
 
     private final DeliveryTrackingService deliveryTrackingService;

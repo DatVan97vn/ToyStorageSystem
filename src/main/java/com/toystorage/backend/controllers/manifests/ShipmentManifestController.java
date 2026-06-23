@@ -13,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/manifests")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class ShipmentManifestController {
 
     private final ShipmentManifestService shipmentManifestService;

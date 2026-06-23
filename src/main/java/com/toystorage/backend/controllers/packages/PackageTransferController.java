@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/package-transfers")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class PackageTransferController {
 
     private final PackageTransferService packageTransferService;

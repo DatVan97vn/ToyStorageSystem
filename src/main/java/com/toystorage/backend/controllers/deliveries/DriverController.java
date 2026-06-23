@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/drivers")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class DriverController {
 
     private final DriverService driverService;

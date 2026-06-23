@@ -11,7 +11,6 @@ import com.toystorage.backend.enums.transfers.TransferStatus;
 @RestController
 @RequestMapping("/api/transfers")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class StockTransferController {
 
     private final StockTransferService stockTransferService;

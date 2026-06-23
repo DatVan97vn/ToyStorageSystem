@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/audit-logs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class AuditLogController {
 
     private final AuditLogService auditLogService;
