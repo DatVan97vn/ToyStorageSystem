@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UserService userService;
@@ -24,6 +23,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+
         if (userService.findByEmail(request.getEmail()) != null) {
             throw new BadRequest("EMAIL_ALREADY_EXISTS");
         }
@@ -44,6 +44,7 @@ public class AuthController {
 
     @PostMapping("/register-staff")
     public ResponseEntity<?> registerStaff(@RequestBody RegisterStaffRequest request) {
+
         if (userService.findByEmail(request.getEmail()) != null) {
             throw new BadRequest("EMAIL_ALREADY_EXISTS");
         }
@@ -121,15 +122,28 @@ public class AuthController {
         }
 
         userService.changePassword(user, request.getNewPassword());
+
         user.setFirstLogin(false);
+        userService.save(user);
 
-        session.setAttribute("user", user);
+        User updatedUser = userService.findByEmail(user.getEmail());
+        session.setAttribute("user", updatedUser);
+        session.setAttribute("authenticated", false);
 
-        return ResponseEntity.ok("PASSWORD_CHANGED");
+        if (
+                updatedUser.getTwoFactorSecret() == null
+                        || updatedUser.getTwoFactorSecret().isBlank()
+                        || !Boolean.TRUE.equals(updatedUser.getTwoFactorEnabled())
+        ) {
+            return ResponseEntity.ok("REQUIRE_2FA_SETUP");
+        }
+
+        return ResponseEntity.ok("REQUIRE_OTP");
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {
+
         User user = (User) session.getAttribute("user");
         Boolean authenticated = (Boolean) session.getAttribute("authenticated");
 
@@ -137,16 +151,20 @@ public class AuthController {
             throw new BadRequest("NOT_LOGIN");
         }
 
-        if (authenticated == null || !authenticated) {
+        if (!Boolean.TRUE.equals(authenticated)) {
             throw new BadRequest("NOT_AUTHENTICATED");
         }
 
-        return ResponseEntity.ok(userMapper.toResponse(user));
+        User updatedUser = userService.findByEmail(user.getEmail());
+
+        return ResponseEntity.ok(userMapper.toResponse(updatedUser));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
+
         session.invalidate();
+
         return ResponseEntity.ok("LOGOUT_SUCCESS");
     }
 }

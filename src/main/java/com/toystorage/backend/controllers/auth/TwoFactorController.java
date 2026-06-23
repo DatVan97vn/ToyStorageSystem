@@ -20,9 +20,9 @@ public class TwoFactorController {
     private final TwoFactorService twoFactorService;
     private final UserService userService;
 
-    // ================= SETUP 2FA =================
     @PostMapping("/setup")
     public ResponseEntity<?> setup(HttpSession session) {
+
         User sessionUser = (User) session.getAttribute("user");
 
         if (sessionUser == null) {
@@ -42,10 +42,12 @@ public class TwoFactorController {
 
         userService.save(user);
 
-        session.setAttribute("user", user);
+        User updatedUser = userService.findByEmail(user.getEmail());
+        session.setAttribute("user", updatedUser);
+        session.setAttribute("authenticated", false);
 
         String qrUrl = twoFactorService.getQRBarcodeURL(
-                user.getEmail(),
+                updatedUser.getEmail(),
                 secret
         );
 
@@ -63,7 +65,6 @@ public class TwoFactorController {
         }
     }
 
-    // ================= VERIFY 2FA SETUP =================
     @PostMapping("/verify")
     public ResponseEntity<?> verifySetup(
             @RequestParam int code,
@@ -95,15 +96,18 @@ public class TwoFactorController {
         }
 
         user.setTwoFactorEnabled(true);
-
         userService.save(user);
 
-        session.setAttribute("user", user);
+        User updatedUser = userService.findByEmail(user.getEmail());
 
-        return ResponseEntity.ok("2FA_ENABLED");
+        session.setAttribute("user", updatedUser);
+        session.setAttribute("authenticated", true);
+
+        userService.updateLastLogin(updatedUser);
+
+        return ResponseEntity.ok("LOGIN_SUCCESS");
     }
 
-    // ================= LOGIN 2FA =================
     @PostMapping("/login")
     public ResponseEntity<?> login2FA(
             @RequestParam int code,
