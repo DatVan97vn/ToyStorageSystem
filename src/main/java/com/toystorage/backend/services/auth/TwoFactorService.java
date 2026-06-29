@@ -22,9 +22,17 @@ public class TwoFactorService {
             return false;
         }
 
+        System.out.println("SECRET VERIFY = " + secret);
+        System.out.println("CODE VERIFY = " + code);
+        System.out.println("SERVER TIME = " + java.time.LocalDateTime.now());
+
         GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
 
-        return googleAuthenticator.authorize(secret, code);
+        boolean result = googleAuthenticator.authorize(secret, code);
+
+        System.out.println("OTP VALID = " + result);
+
+        return result;
     }
 
     public String getQRBarcodeURL(String email, String secret) {

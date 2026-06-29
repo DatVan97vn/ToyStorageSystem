@@ -85,7 +85,11 @@ public class TwoFactorController {
         if (user.getTwoFactorSecret() == null || user.getTwoFactorSecret().isBlank()) {
             throw new BadRequest("2FA_NOT_SETUP");
         }
+        System.out.println("OTP = " + code);
 
+        System.out.println("SECRET = " + sessionUser.getTwoFactorSecret());
+
+        System.out.println("TIME = " + java.time.LocalDateTime.now());
         boolean valid = twoFactorService.verifyCode(
                 user.getTwoFactorSecret(),
                 code
@@ -132,7 +136,11 @@ public class TwoFactorController {
         if (!Boolean.TRUE.equals(user.getTwoFactorEnabled())) {
             throw new BadRequest("2FA_NOT_ENABLED");
         }
+        System.out.println("OTP = " + code);
 
+        System.out.println("SECRET = " + sessionUser.getTwoFactorSecret());
+
+        System.out.println("TIME = " + java.time.LocalDateTime.now());
         boolean valid = twoFactorService.verifyCode(
                 user.getTwoFactorSecret(),
                 code
