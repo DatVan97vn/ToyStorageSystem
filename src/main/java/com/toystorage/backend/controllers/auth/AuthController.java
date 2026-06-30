@@ -146,10 +146,11 @@ public class AuthController {
             throw new BadRequest("USER_NOT_FOUND");
         }
 
-        userService.changePassword(user, request.getNewPassword());
+        if (userService.checkPassword(request.getNewPassword(), user.getPassword())) {
+            throw new BadRequest("NEW_PASSWORD_MUST_BE_DIFFERENT");
+        }
 
-        user.setFirstLogin(false);
-        userService.save(user);
+        userService.changePassword(user, request.getNewPassword());
 
         User updatedUser = userService.findByEmail(user.getEmail());
         session.setAttribute("user", updatedUser);
