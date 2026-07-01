@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/auth/user";
-
+import "../../assets/css/auth/Login.css";
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const getErrorMessage = (err) => {
@@ -23,6 +25,7 @@ function LoginPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
             const res = await login({
@@ -51,34 +54,46 @@ function LoginPage() {
         } catch (err) {
             console.log("Login error:", err.response?.data);
             setError(getErrorMessage(err));
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="auth-page">
-            <div className="auth-card">
-                <h2>Login</h2>
+        <div className="login-page">
+            <div className="login-card">
+                <h1 className="login-title">Toy Storage System</h1>
 
                 <form onSubmit={handleLogin}>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        autoComplete="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            autoComplete="email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        autoComplete="current-password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            autoComplete="current-password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {error && <div className="login-error">{error}</div>}
 
-                    <button type="submit">Login</button>
+                    <button className="login-btn" disabled={loading}>
+                        {loading ? "Signing in..." : "Login"}
+                    </button>
                 </form>
             </div>
         </div>

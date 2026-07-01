@@ -6,6 +6,7 @@ import ProtectedRoute from "./main-components/two-factor/ProtectedRoute";
 import LoginPage from "./pages/auth/LoginPage";
 import SetupTwoFactorPage from "./pages/two-factor/SetupTwoFactorPage";
 import VerifyOtpPage from "./pages/two-factor/VerifyOtpPage";
+import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
 
 import WarehouseDashboard from "./pages/warehouse/WarehouseDashboard";
 import TransferList from "./pages/warehouse/TransferList";
@@ -17,7 +18,7 @@ import ManifestDetail from "./pages/warehouse/ManifestDetail";
 import PackageBarcodePrint from "./pages/warehouse/PackageBarcodePrint";
 import TransferPackages from "./pages/warehouse/TransferPackages";
 import PackageDetail from "./pages/warehouse/PackageDetail";
-import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
+
 
 function App() {
   return (
