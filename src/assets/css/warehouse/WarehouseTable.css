@@ -1,0 +1,60 @@
+.warehouse-table-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.warehouse-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.warehouse-table thead {
+    background: #fff7ed;
+}
+
+.warehouse-table th {
+    padding: 15px 16px;
+    text-align: left;
+    color: #f97316;
+    font-size: 14px;
+    font-weight: 800;
+    border-bottom: 1px solid #fed7aa;
+    white-space: nowrap;
+}
+
+.warehouse-table td {
+    padding: 15px 16px;
+    color: #374151;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.warehouse-table tbody tr:hover {
+    background: #fffaf5;
+}
+
+.warehouse-table-empty {
+    text-align: center;
+    color: #6b7280 !important;
+    padding: 28px !important;
+}
+
+.warehouse-table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 900px) {
+    .warehouse-table-card {
+        overflow-x: auto;
+    }
+
+    .warehouse-table {
+        min-width: 760px;
+    }
+}

@@ -1,0 +1,62 @@
+.package-table-toolbar {
+    margin-bottom: 16px;
+}
+
+.package-search-input {
+    width: 100%;
+    max-width: 520px;
+    padding: 12px 16px;
+    border: 1px solid #fdba74;
+    border-radius: 12px;
+    outline: none;
+    font-size: 14px;
+}
+
+.package-search-input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+}
+
+.package-action-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.package-btn {
+    min-width: 100px;
+    padding: 10px 16px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.package-btn-filled {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    border: 1px solid #f59e0b !important;
+}
+
+.package-btn-filled:hover {
+    background: #ffffff !important;
+    color: #f59e0b !important;
+    border-color: #f59e0b !important;
+}
+
+.package-btn-outline {
+    background: #ffffff !important;
+    color: #f59e0b !important;
+    border: 1px solid #f59e0b !important;
+}
+
+.package-btn-outline:hover {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+}
+
+.package-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(249, 115, 22, 0.22);
+}
