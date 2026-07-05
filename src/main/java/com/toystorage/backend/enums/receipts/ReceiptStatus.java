@@ -2,15 +2,25 @@ package com.toystorage.backend.enums.receipts;
 
 public enum ReceiptStatus {
 
-    DRAFT,
+    DRAFT,          // Trưởng cửa hàng tạo phiếu
 
-    RECEIVING,
+    REQUESTED,      // Gửi yêu cầu nhập hàng
 
-    CHECKED,
+    ORDERING,       // Kinh doanh đang order supplier
 
-    COMPLETED,
+    DELIVERING,     // Supplier đang giao hàng
 
-    DISCREPANCY,
+    ARRIVED,        // Hàng đã đến kho tổng
+
+    RECEIVING,      // Kho đang kiểm hàng
+
+    CHECKED,        // Kiểm hàng xong
+
+    PUTAWAY,        // Đang đưa hàng lên kệ
+
+    COMPLETED,      // Hoàn tất nhập kho
+
+    DISCREPANCY,    // Có lệch số lượng
 
     CANCELLED
 }

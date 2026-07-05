@@ -14,7 +14,9 @@ public enum TransferStatus {
 
     RECEIVING,      // kho nhận đang kiểm
 
-    COMPLETED,      // hoàn tất
+    COMPLETED,// hoàn tất
+
+    DISCREPANCY,
 
     CANCELLED
 }

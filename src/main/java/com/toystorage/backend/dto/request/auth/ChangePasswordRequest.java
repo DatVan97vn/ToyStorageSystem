@@ -8,15 +8,14 @@ import lombok.Setter;
 /*
  * DTO đổi mật khẩu
  */
-
 @Getter
 @Setter
-
 public class ChangePasswordRequest {
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "Old password is required")
+    private String oldPassword;
 
-    @Size(min = 6, message = "Password minimum 6 characters")
-
+    @NotBlank(message = "New password is required")
+    @Size(min = 6, message = "New password minimum 6 characters")
     private String newPassword;
 }

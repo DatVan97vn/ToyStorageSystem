@@ -48,6 +48,7 @@ public class Warehouses {
     @Column(nullable = false, unique = true, length = 255)
     private String code;
 
+
     /*
      * Loại kho
      *

@@ -87,6 +87,14 @@ public class AuthController {
             throw new BadRequest("INVALID_PASSWORD");
         }
 
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new BadRequest("ACCOUNT_INACTIVE");
+        }
+
+        if (user.getStatus() == UserStatus.LOCKED) {
+            throw new BadRequest("ACCOUNT_LOCKED");
+        }
+
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new BadRequest("ACCOUNT_NOT_ACTIVE");
         }
@@ -136,7 +144,15 @@ public class AuthController {
             throw new BadRequest("NOT_LOGIN");
         }
 
-        if (request.getNewPassword() == null || request.getNewPassword().length() < 6) {
+        if (request.getOldPassword() == null || request.getOldPassword().isBlank()) {
+            throw new BadRequest("OLD_PASSWORD_REQUIRED");
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().isBlank()) {
+            throw new BadRequest("NEW_PASSWORD_REQUIRED");
+        }
+
+        if (request.getNewPassword().length() < 6) {
             throw new BadRequest("PASSWORD_TOO_SHORT");
         }
 
@@ -146,6 +162,12 @@ public class AuthController {
             throw new BadRequest("USER_NOT_FOUND");
         }
 
+        // Kiểm tra mật khẩu cũ có đúng không
+        if (!userService.checkPassword(request.getOldPassword(), user.getPassword())) {
+            throw new BadRequest("OLD_PASSWORD_INCORRECT");
+        }
+
+        // Mật khẩu mới không được trùng mật khẩu cũ
         if (userService.checkPassword(request.getNewPassword(), user.getPassword())) {
             throw new BadRequest("NEW_PASSWORD_MUST_BE_DIFFERENT");
         }

@@ -1,7 +1,6 @@
 package com.toystorage.backend.models.inventory;
 
 import com.toystorage.backend.models.products.Products;
-import com.toystorage.backend.models.warehouses.WarehouseLocation;
 import com.toystorage.backend.models.warehouses.Warehouses;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,13 +9,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "inventory_balances",
+        name = "inventory_policies",
         uniqueConstraints = {
                 @UniqueConstraint(
                         columnNames = {
                                 "warehouse_id",
-                                "product_id",
-                                "location_id"
+                                "product_id"
                         }
                 )
         }
@@ -26,63 +24,76 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventoryBalance {
+public class InventoryPolicy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /*
-     * Kho
+     * Kho / Store áp dụng chính sách tồn
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouses warehouse;
 
     /*
-     * Sản phẩm
+     * Sản phẩm áp dụng chính sách tồn
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Products product;
 
     /*
-     * Vị trí/kệ
-     * Kho tổng nên có location
-     * Store có thể null nếu không quản lý theo kệ
+     * Tồn tối thiểu
+     * Nếu tồn <= số này thì báo sắp hết
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private WarehouseLocation location;
+    @Column(name = "minimum_quantity", nullable = false)
+    private Integer minimumQuantity;
 
     /*
-     * Số lượng tồn thực tế
+     * Tồn tối đa
      */
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(name = "maximum_quantity", nullable = false)
+    private Integer maximumQuantity;
 
     /*
-     * Số lượng đang giữ để xuất/điều chuyển
+     * Số lượng gợi ý nhập thêm
      */
-    @Column(name = "reserved_quantity", nullable = false)
-    private Integer reservedQuantity;
+    @Column(name = "reorder_quantity", nullable = false)
+    private Integer reorderQuantity;
 
     /*
-     * Ngày cập nhật
+     * Có đang bật cảnh báo tồn kho không
      */
+    @Column(name = "active", nullable = false)
+    private Boolean active;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
+        this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
 
-        if (this.quantity == null) {
-            this.quantity = 0;
+        if (this.minimumQuantity == null) {
+            this.minimumQuantity = 0;
         }
 
-        if (this.reservedQuantity == null) {
-            this.reservedQuantity = 0;
+        if (this.maximumQuantity == null) {
+            this.maximumQuantity = 0;
+        }
+
+        if (this.reorderQuantity == null) {
+            this.reorderQuantity = 0;
+        }
+
+        if (this.active == null) {
+            this.active = true;
         }
     }
 

@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.toystorage.backend.enums.users.UserStatus;
+import java.util.List;
 import java.time.LocalDateTime;
 
 @Service
@@ -105,5 +106,35 @@ public class UserService {
         }
 
         return userRepository.save(newUser);
+    }
+    // ================= GET ALL USERS =================
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // ================= GET USER BY ID =================
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+    }
+
+    // ================= UPDATE USER STATUS =================
+    @Transactional
+    public User updateUserStatus(Long id, UserStatus status) {
+        User user = getUserById(id);
+
+        user.setStatus(status);
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void resetPassword(Long id) {
+        User user = getUserById(id);
+
+        user.setPassword(passwordEncoder.encode("123456"));
+        user.setFirstLogin(true);
+
+        userRepository.save(user);
     }
 }
