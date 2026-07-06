@@ -22,6 +22,8 @@ public class GoodsReceiptItemResponse {
 
     private String productSku;
 
+    private Integer putawayQuantity;
+
     private String productBarcode;
 
     private Integer expectedQuantity;

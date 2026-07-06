@@ -12,15 +12,13 @@ import java.util.List;
 @Setter
 public class CreateGoodsReceiptRequest {
 
-    private Long manifestId;
-
-    private Long transferId;
+    private Long supplierId;
 
     private Long warehouseId;
 
-    private Long receivedById;
+    private Long createdById;
 
-    private Long checkedById;
+    private Long businessStaffId;
 
     private String note;
 

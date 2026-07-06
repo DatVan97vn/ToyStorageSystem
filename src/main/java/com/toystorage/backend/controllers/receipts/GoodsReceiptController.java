@@ -11,19 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/goods-receipts")
 @RequiredArgsConstructor
-
 public class GoodsReceiptController {
 
     private final GoodsReceiptService goodsReceiptService;
 
-    /*
-     * Tạo phiếu nhận hàng
-     */
     @PostMapping
     public ResponseEntity<?> createReceipt(
             @RequestBody CreateGoodsReceiptRequest request
     ) {
-
         if (request == null) {
             throw new BadRequest("GOODS_RECEIPT_REQUEST_REQUIRED");
         }
@@ -33,46 +28,30 @@ public class GoodsReceiptController {
         );
     }
 
-    /*
-     * Xem toàn bộ phiếu nhận hàng
-     */
     @GetMapping
     public ResponseEntity<?> getAllReceipts() {
-
         return ResponseEntity.ok(
                 goodsReceiptService.getAllReceipts()
         );
     }
 
-    /*
-     * Xem chi tiết phiếu nhận hàng
-     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getReceiptById(
             @PathVariable Long id
     ) {
-
         if (id == null) {
             throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
         }
 
-        Object receipt = goodsReceiptService.getReceiptById(id);
-
-        if (receipt == null) {
-            throw new BadRequest("GOODS_RECEIPT_NOT_FOUND");
-        }
-
-        return ResponseEntity.ok(receipt);
+        return ResponseEntity.ok(
+                goodsReceiptService.getReceiptById(id)
+        );
     }
 
-    /*
-     * Xem phiếu theo kho
-     */
     @GetMapping("/warehouse/{warehouseId}")
     public ResponseEntity<?> getReceiptsByWarehouse(
             @PathVariable Long warehouseId
     ) {
-
         if (warehouseId == null) {
             throw new BadRequest("WAREHOUSE_ID_REQUIRED");
         }
@@ -82,14 +61,10 @@ public class GoodsReceiptController {
         );
     }
 
-    /*
-     * Danh sách item trong phiếu
-     */
     @GetMapping("/{id}/items")
     public ResponseEntity<?> getReceiptItems(
             @PathVariable Long id
     ) {
-
         if (id == null) {
             throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
         }
@@ -99,32 +74,91 @@ public class GoodsReceiptController {
         );
     }
 
-    /*
-     * Bắt đầu nhận hàng
-     */
-    @PutMapping("/{id}/start")
-    public ResponseEntity<?> startReceiving(
+    @PutMapping("/{id}/requested")
+    public ResponseEntity<?> markRequested(
             @PathVariable Long id
     ) {
-
         if (id == null) {
             throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
         }
 
         return ResponseEntity.ok(
-                goodsReceiptService.startReceiving(id)
+                goodsReceiptService.markRequested(id)
         );
     }
 
-    /*
-     * Cập nhật số lượng thực nhận
-     */
+    @PutMapping("/{id}/ordering")
+    public ResponseEntity<?> markOrdering(
+            @PathVariable Long id,
+            @RequestParam Long businessStaffId
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        if (businessStaffId == null) {
+            throw new BadRequest("BUSINESS_STAFF_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.markOrdering(id, businessStaffId)
+        );
+    }
+
+    @PutMapping("/{id}/delivering")
+    public ResponseEntity<?> markDelivering(
+            @PathVariable Long id
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.markDelivering(id)
+        );
+    }
+
+    @PutMapping("/{id}/arrived")
+    public ResponseEntity<?> markArrived(
+            @PathVariable Long id,
+            @RequestParam Long receivedById
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        if (receivedById == null) {
+            throw new BadRequest("RECEIVER_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.markArrived(id, receivedById)
+        );
+    }
+
+    @PutMapping("/{id}/checking")
+    public ResponseEntity<?> startChecking(
+            @PathVariable Long id,
+            @RequestParam Long checkedById
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        if (checkedById == null) {
+            throw new BadRequest("CHECKER_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.startChecking(id, checkedById)
+        );
+    }
+
     @PutMapping("/items/{itemId}/receive")
     public ResponseEntity<?> receiveItem(
             @PathVariable Long itemId,
             @RequestBody ReceiveGoodsReceiptItemRequest request
     ) {
-
         if (itemId == null) {
             throw new BadRequest("GOODS_RECEIPT_ITEM_ID_REQUIRED");
         }
@@ -134,21 +168,40 @@ public class GoodsReceiptController {
         }
 
         return ResponseEntity.ok(
-                goodsReceiptService.receiveItem(
-                        itemId,
-                        request
-                )
+                goodsReceiptService.receiveItem(itemId, request)
         );
     }
 
-    /*
-     * Hoàn tất phiếu
-     */
+    @PutMapping("/{id}/complete-checking")
+    public ResponseEntity<?> completeChecking(
+            @PathVariable Long id
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.completeChecking(id)
+        );
+    }
+
+    @PutMapping("/{id}/putaway")
+    public ResponseEntity<?> moveToPutaway(
+            @PathVariable Long id
+    ) {
+        if (id == null) {
+            throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
+        }
+
+        return ResponseEntity.ok(
+                goodsReceiptService.moveToPutaway(id)
+        );
+    }
+
     @PutMapping("/{id}/complete")
     public ResponseEntity<?> completeReceipt(
             @PathVariable Long id
     ) {
-
         if (id == null) {
             throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
         }
@@ -158,14 +211,10 @@ public class GoodsReceiptController {
         );
     }
 
-    /*
-     * Hủy phiếu
-     */
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> cancelReceipt(
             @PathVariable Long id
     ) {
-
         if (id == null) {
             throw new BadRequest("GOODS_RECEIPT_ID_REQUIRED");
         }

@@ -12,7 +12,7 @@ public enum ReceiptStatus {
 
     ARRIVED,        // Hàng đã đến kho tổng
 
-    RECEIVING,      // Kho đang kiểm hàng
+    CHECKING,       // Kho đang kiểm hàng
 
     CHECKED,        // Kiểm hàng xong
 

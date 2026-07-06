@@ -1,16 +1,13 @@
 package com.toystorage.backend.dto.response.receipts;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-/*
- * Response phiếu nhận hàng
- */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class GoodsReceiptResponse {
 
@@ -18,13 +15,21 @@ public class GoodsReceiptResponse {
 
     private String receiptCode;
 
-    private Long manifestId;
+    private Long supplierId;
 
-    private Long transferId;
+    private String supplierName;
 
     private Long warehouseId;
 
     private String warehouseName;
+
+    private Long createdById;
+
+    private String createdByName;
+
+    private Long businessStaffId;
+
+    private String businessStaffName;
 
     private Long receivedById;
 
@@ -38,9 +43,21 @@ public class GoodsReceiptResponse {
 
     private String note;
 
+    private LocalDateTime requestedAt;
+
+    private LocalDateTime orderedAt;
+
+    private LocalDateTime deliveringAt;
+
+    private LocalDateTime arrivedAt;
+
     private LocalDateTime startedReceiveAt;
 
     private LocalDateTime completedReceiveAt;
 
+    private LocalDateTime completedAt;
+
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }
