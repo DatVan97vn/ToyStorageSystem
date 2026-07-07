@@ -4,6 +4,7 @@ import com.toystorage.backend.enums.receipts.ReceiptStatus;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.models.suppliers.Suppliers;
 import com.toystorage.backend.models.warehouses.Warehouses;
+import com.toystorage.backend.models.transfers.StockTransfer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,7 +40,12 @@ public class GoodsReceipt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id")
     private Warehouses warehouse;
-
+    /*
+     * Phiếu điều chuyển kho
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transfer_id")
+    private StockTransfer transfer;
     /*
      * Trưởng cửa hàng / người tạo yêu cầu nhập
      */
