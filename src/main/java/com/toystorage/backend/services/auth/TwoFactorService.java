@@ -1,6 +1,7 @@
 package com.toystorage.backend.services.auth;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +11,16 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class TwoFactorService {
 
-    public String generateSecret() {
-        GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
-        GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
+    private GoogleAuthenticator googleAuthenticator() {
+        GoogleAuthenticatorConfig config = new GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder()
+                .setWindowSize(3)
+                .build();
 
+        return new GoogleAuthenticator(config);
+    }
+
+    public String generateSecret() {
+        GoogleAuthenticatorKey key = googleAuthenticator().createCredentials();
         return key.getKey();
     }
 
@@ -22,17 +29,7 @@ public class TwoFactorService {
             return false;
         }
 
-        System.out.println("SECRET VERIFY = " + secret);
-        System.out.println("CODE VERIFY = " + code);
-        System.out.println("SERVER TIME = " + java.time.LocalDateTime.now());
-
-        GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
-
-        boolean result = googleAuthenticator.authorize(secret, code);
-
-        System.out.println("OTP VALID = " + result);
-
-        return result;
+        return googleAuthenticator().authorize(secret.trim(), code);
     }
 
     public String getQRBarcodeURL(String email, String secret) {
@@ -42,7 +39,10 @@ public class TwoFactorService {
         String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
 
         return "otpauth://totp/" + encodedIssuer + ":" + encodedEmail
-                + "?secret=" + secret
-                + "&issuer=" + encodedIssuer;
+                + "?secret=" + secret.trim()
+                + "&issuer=" + encodedIssuer
+                + "&algorithm=SHA1"
+                + "&digits=6"
+                + "&period=30";
     }
 }
