@@ -1,5 +1,6 @@
 package com.toystorage.backend.repository.packages;
 
+import com.toystorage.backend.models.packages.PackageBox;
 import com.toystorage.backend.models.packages.PackageTransferItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,7 +17,6 @@ public interface PackageTransferItemRepository
     List<PackageTransferItem> findByTransferId(
             Long transferId
     );
-
     List<PackageTransferItem> findByTransferItemId(
             Long transferItemId
     );

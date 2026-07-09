@@ -11,5 +11,5 @@ public interface PackageBoxRepository
 
     Optional<PackageBox> findByPackageCode(String packageCode);
 
-    List<PackageBox> findByTransfer_Id(Long transferId);
+
 }

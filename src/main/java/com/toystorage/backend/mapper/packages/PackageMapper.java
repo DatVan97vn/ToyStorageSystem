@@ -15,54 +15,6 @@ public class PackageMapper {
                 .id(box.getId())
                 .packageCode(box.getPackageCode())
 
-                .transferId(
-                        box.getTransfer() != null
-                                ? box.getTransfer().getId()
-                                : null
-                )
-
-                .transferCode(
-                        box.getTransfer() != null
-                                ? box.getTransfer().getTransferCode()
-                                : null
-                )
-
-                .fromWarehouseId(
-                        box.getTransfer() != null &&
-                                box.getTransfer().getFromWarehouse() != null
-                                ? box.getTransfer()
-                                .getFromWarehouse()
-                                .getId()
-                                : null
-                )
-
-                .fromWarehouseName(
-                        box.getTransfer() != null &&
-                                box.getTransfer().getFromWarehouse() != null
-                                ? box.getTransfer()
-                                .getFromWarehouse()
-                                .getName()
-                                : null
-                )
-
-                .toWarehouseId(
-                        box.getTransfer() != null &&
-                                box.getTransfer().getToWarehouse() != null
-                                ? box.getTransfer()
-                                .getToWarehouse()
-                                .getId()
-                                : null
-                )
-
-                .toWarehouseName(
-                        box.getTransfer() != null &&
-                                box.getTransfer().getToWarehouse() != null
-                                ? box.getTransfer()
-                                .getToWarehouse()
-                                .getName()
-                                : null
-                )
-
                 .warehouseId(
                         box.getWarehouse() != null
                                 ? box.getWarehouse().getId()

@@ -13,7 +13,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/manifests")
 @RequiredArgsConstructor
-
 public class ShipmentManifestController {
 
     private final ShipmentManifestService shipmentManifestService;
@@ -101,6 +100,57 @@ public class ShipmentManifestController {
                 shipmentManifestService.updateStatus(id, status)
         );
     }
+
+    // =========================================================
+    // TRANSFERS
+    // Business dùng phần này để gắn transfer vào manifest
+    // =========================================================
+
+    @PostMapping("/{manifestId}/transfers/{transferId}")
+    public ResponseEntity<?> addTransferToManifest(
+            @PathVariable Long manifestId,
+            @PathVariable Long transferId
+    ) {
+        shipmentManifestService.addTransferToManifest(
+                manifestId,
+                transferId
+        );
+
+        return ResponseEntity.ok(
+                "ADD_TRANSFER_TO_MANIFEST_SUCCESS"
+        );
+    }
+
+    @GetMapping("/{manifestId}/transfers")
+    public ResponseEntity<?> getTransfersByManifest(
+            @PathVariable Long manifestId
+    ) {
+        return ResponseEntity.ok(
+                shipmentManifestService.getTransferResponsesByManifest(
+                        manifestId
+                )
+        );
+    }
+
+    @DeleteMapping("/{manifestId}/transfers/{transferId}")
+    public ResponseEntity<?> removeTransferFromManifest(
+            @PathVariable Long manifestId,
+            @PathVariable Long transferId
+    ) {
+        shipmentManifestService.removeTransferFromManifest(
+                manifestId,
+                transferId
+        );
+
+        return ResponseEntity.ok(
+                "REMOVE_TRANSFER_FROM_MANIFEST_SUCCESS"
+        );
+    }
+
+    // =========================================================
+    // PACKAGES
+    // Kho đóng hàng xong mới gắn package vào manifest
+    // =========================================================
 
     @PostMapping("/{manifestId}/packages/{packageId}")
     public ResponseEntity<?> addPackageToManifest(

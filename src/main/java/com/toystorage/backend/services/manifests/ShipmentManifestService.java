@@ -1,20 +1,26 @@
 package com.toystorage.backend.services.manifests;
 
 import com.toystorage.backend.dto.response.manifests.ManifestPackageResponse;
+import com.toystorage.backend.dto.response.manifests.ManifestTransferResponse;
 import com.toystorage.backend.dto.response.manifests.ShipmentManifestResponse;
 import com.toystorage.backend.enums.manifests.ManifestStatus;
 import com.toystorage.backend.exceptions.BadRequest;
 import com.toystorage.backend.mapper.manifests.ManifestPackageMapper;
+import com.toystorage.backend.mapper.manifests.ManifestTransferMapper;
 import com.toystorage.backend.mapper.manifests.ShipmentManifestMapper;
 import com.toystorage.backend.models.auth.User;
 import com.toystorage.backend.models.manifests.ShipmentManifest;
 import com.toystorage.backend.models.manifests.ShipmentManifestPackage;
+import com.toystorage.backend.models.manifests.ShipmentManifestTransfer;
 import com.toystorage.backend.models.packages.PackageBox;
+import com.toystorage.backend.models.transfers.StockTransfer;
 import com.toystorage.backend.models.warehouses.Warehouses;
 import com.toystorage.backend.repository.auth.UserRepository;
 import com.toystorage.backend.repository.manifests.ShipmentManifestPackageRepository;
 import com.toystorage.backend.repository.manifests.ShipmentManifestRepository;
+import com.toystorage.backend.repository.manifests.ShipmentManifestTransferRepository;
 import com.toystorage.backend.repository.packages.PackageBoxRepository;
+import com.toystorage.backend.repository.transfers.StockTransferRepository;
 import com.toystorage.backend.repository.warehouses.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,9 +34,12 @@ public class ShipmentManifestService {
 
     private final ShipmentManifestRepository shipmentManifestRepository;
     private final ShipmentManifestPackageRepository shipmentManifestPackageRepository;
+    private final ShipmentManifestTransferRepository shipmentManifestTransferRepository;
+
     private final WarehouseRepository warehouseRepository;
     private final UserRepository userRepository;
     private final PackageBoxRepository packageBoxRepository;
+    private final StockTransferRepository stockTransferRepository;
 
     @Transactional
     public ShipmentManifestResponse createManifest(
@@ -99,9 +108,7 @@ public class ShipmentManifestService {
     }
 
     @Transactional(readOnly = true)
-    public ShipmentManifestResponse getManifestResponseById(
-            Long id
-    ) {
+    public ShipmentManifestResponse getManifestResponseById(Long id) {
         ShipmentManifest manifest =
                 shipmentManifestRepository.findDetailById(id)
                         .orElseThrow(() ->
@@ -169,6 +176,74 @@ public class ShipmentManifestService {
                 shipmentManifestRepository.save(manifest)
         );
     }
+
+    // =========================================================
+    // TRANSFERS IN MANIFEST
+    // Business tạo manifest rồi gắn transfer vào manifest
+    // =========================================================
+
+    @Transactional
+    public void addTransferToManifest(
+            Long manifestId,
+            Long transferId
+    ) {
+        ShipmentManifest manifest = getManifestById(manifestId);
+
+        StockTransfer transfer = stockTransferRepository.findById(transferId)
+                .orElseThrow(() -> new BadRequest("TRANSFER_NOT_FOUND"));
+
+        if (shipmentManifestTransferRepository.existsByManifest_IdAndTransfer_Id(
+                manifestId,
+                transferId
+        )) {
+            throw new BadRequest("TRANSFER_ALREADY_IN_MANIFEST");
+        }
+
+        ShipmentManifestTransfer manifestTransfer =
+                ShipmentManifestTransfer.builder()
+                        .manifest(manifest)
+                        .transfer(transfer)
+                        .build();
+
+        shipmentManifestTransferRepository.save(manifestTransfer);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ManifestTransferResponse> getTransferResponsesByManifest(
+            Long manifestId
+    ) {
+        if (manifestId == null) {
+            throw new BadRequest("MANIFEST_ID_REQUIRED");
+        }
+
+        return shipmentManifestTransferRepository.findByManifest_Id(manifestId)
+                .stream()
+                .map(ManifestTransferMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public void removeTransferFromManifest(
+            Long manifestId,
+            Long transferId
+    ) {
+        if (!shipmentManifestTransferRepository.existsByManifest_IdAndTransfer_Id(
+                manifestId,
+                transferId
+        )) {
+            throw new BadRequest("MANIFEST_TRANSFER_NOT_FOUND");
+        }
+
+        shipmentManifestTransferRepository.deleteByManifest_IdAndTransfer_Id(
+                manifestId,
+                transferId
+        );
+    }
+
+    // =========================================================
+    // PACKAGES IN MANIFEST
+    // Kho đóng hàng xong mới gắn package vào manifest
+    // =========================================================
 
     @Transactional
     public void addPackageToManifest(

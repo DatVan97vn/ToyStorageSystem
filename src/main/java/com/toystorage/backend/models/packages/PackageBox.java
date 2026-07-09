@@ -27,10 +27,6 @@ public class PackageBox {
     private String packageCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transfer_id")
-    private StockTransfer transfer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id")
     private Warehouses warehouse;
 
